@@ -37,4 +37,6 @@ build/
 ### Mac OS ###
 .DS_Store
 
-.application.properites
+### Project Dependencies ###
+src/main/resources/application.properties
+src/main/resources/mochi-bot.json
