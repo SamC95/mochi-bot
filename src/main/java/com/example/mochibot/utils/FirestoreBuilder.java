@@ -10,7 +10,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class FirestoreBuilder {
-    public void setUpFirebase() throws IOException {
+    public Firestore setUpFirebase() throws IOException {
         FileInputStream serviceAccount = new FileInputStream("src/main/resources/mochi-bot.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
@@ -18,6 +18,6 @@ public class FirestoreBuilder {
                 .build();
         FirebaseApp.initializeApp(options);
 
-        Firestore database = FirestoreClient.getFirestore();
+        return FirestoreClient.getFirestore();
     }
 }
