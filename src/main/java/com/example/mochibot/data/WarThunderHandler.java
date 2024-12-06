@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.mochibot.utils.UpdateHandler.getUpdate;
@@ -46,7 +47,7 @@ public class WarThunderHandler {
             }
           }
           catch (Exception e) {
-            System.err.println("Exception while fetching update: " + e.getMessage());
+            System.err.println("Exception while fetching war thunder update: " + e.getMessage());
           }
         });
   }
@@ -59,7 +60,10 @@ public class WarThunderHandler {
         .ofType(TextChannel.class)
         .flatMap(
             channel -> {
-              String image = post.getImage() != null ? post.getImage() : "";
+                String image =
+                        post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
+                                ? post.getImage()
+                                : "";
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()

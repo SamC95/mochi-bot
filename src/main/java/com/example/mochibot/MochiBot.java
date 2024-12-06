@@ -4,6 +4,7 @@ import com.example.mochibot.data.FFXIHandler;
 import com.example.mochibot.data.FFXIVHandler;
 import com.example.mochibot.data.HellLetLooseHandler;
 import com.example.mochibot.data.MHWildsHandler;
+import com.example.mochibot.data.SatisfactoryGameHandler;
 import com.example.mochibot.data.TheOldRepublicHandler;
 import com.example.mochibot.data.WarThunderHandler;
 import com.example.mochibot.data.WorldOfWarcraftHandler;
@@ -28,6 +29,7 @@ public class MochiBot {
   HellLetLooseHandler hellLetLooseHandler = new HellLetLooseHandler();
   TheOldRepublicHandler theOldRepublicHandler = new TheOldRepublicHandler();
   MHWildsHandler mhWildsHandler = new MHWildsHandler();
+  SatisfactoryGameHandler satisfactoryGameHandler = new SatisfactoryGameHandler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -88,6 +90,14 @@ public class MochiBot {
     Schedulers.parallel()
         .schedulePeriodically(
             () -> mhWildsHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+
+    // Satisfactory News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> satisfactoryGameHandler.runNewsTask(gateway).subscribe(),
+            0,
+            10,
+            TimeUnit.MINUTES);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }
