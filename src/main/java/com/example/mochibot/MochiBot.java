@@ -51,7 +51,7 @@ public class MochiBot {
     // Final Fantasy XIV News Feed
     Schedulers.parallel()
         .schedulePeriodically(
-            () -> xivHandler.runFFXIVNewsTask(gateway).subscribe(), 1, 10, TimeUnit.MINUTES);
+            () -> xivHandler.runFFXIVNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
 
     // Final Fantasy XI Topics Feed
     Schedulers.parallel()
@@ -61,7 +61,7 @@ public class MochiBot {
     // Final Fantasy XI Information Feed
     Schedulers.parallel()
         .schedulePeriodically(
-            () -> xiHandler.runFFXIInformationTask(gateway).subscribe(), 1, 10, TimeUnit.MINUTES);
+            () -> xiHandler.runFFXIInformationTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
 
     // War Thunder News Feed
     Schedulers.parallel()
@@ -74,7 +74,7 @@ public class MochiBot {
     // World of Warcraft News Feed
     Schedulers.parallel()
         .schedulePeriodically(
-            () -> worldOfWarcraftHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+            () -> worldOfWarcraftHandler.runNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
 
     // Hell Let Loose News Feed
     Schedulers.parallel()
@@ -84,7 +84,7 @@ public class MochiBot {
     // Star Wars The Old Republic News Feed
     Schedulers.parallel()
         .schedulePeriodically(
-            () -> theOldRepublicHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+            () -> theOldRepublicHandler.runNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
 
     // Monster Hunter Wilds News Feed
     Schedulers.parallel()
@@ -95,7 +95,7 @@ public class MochiBot {
     Schedulers.parallel()
         .schedulePeriodically(
             () -> satisfactoryGameHandler.runNewsTask(gateway).subscribe(),
-            0,
+            5,
             10,
             TimeUnit.MINUTES);
 
