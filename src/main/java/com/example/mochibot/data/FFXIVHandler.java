@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 
+import static com.example.mochibot.utils.UpdateHandler.getUpdate;
+
 public class FFXIVHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
@@ -30,7 +32,7 @@ public class FFXIVHandler {
 
     DocumentReference docRef = database.collection("games").document("100");
 
-    return getUpdate(topicsPost, docRef);
+    return getUpdate(topicsPost, docRef, firestoreDocUpdater);
   }
 
   public Update FFXIVNewsHandler() throws IOException, ExecutionException, InterruptedException {
@@ -40,25 +42,7 @@ public class FFXIVHandler {
 
     DocumentReference docRef = database.collection("games").document("101");
 
-    return getUpdate(newsPost, docRef);
-  }
-
-  private Update getUpdate(Update post, DocumentReference docRef)
-      throws InterruptedException, ExecutionException {
-    DocumentSnapshot docSnapshot = docRef.get().get();
-
-    if (docSnapshot.exists()) {
-      String currentTitle = docSnapshot.getString("title");
-
-      if (currentTitle != null && currentTitle.equals(post.getTitle())) {
-        System.out.println("Checked document at: " + Instant.now());
-        return null;
-      } else {
-        firestoreDocUpdater.updateDocumentWithPostData(docRef, post);
-        return post;
-      }
-    }
-    return null;
+    return getUpdate(newsPost, docRef, firestoreDocUpdater);
   }
 
   public Mono<Void> runFFXIVTopicsTask(GatewayDiscordClient gateway) {

@@ -2,11 +2,8 @@ package com.example.mochibot;
 
 import com.example.mochibot.utils.FirestoreBuilder;
 import com.example.mochibot.utils.PropertiesLoader;
-import com.sun.tools.javac.Main;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 public class MochiBotApplication {
   public static void main(String[] args) {
