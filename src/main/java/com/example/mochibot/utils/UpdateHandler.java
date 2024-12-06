@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 public class UpdateHandler {
   public static Update getUpdate(
-      Update post, DocumentReference docRef, FirestoreDocUpdater firestoreDocUpdater)
+      Update post, DocumentReference docRef, FirestoreDocUpdater firestoreDocUpdater, String documentName)
       throws InterruptedException, ExecutionException {
     DocumentSnapshot docSnapshot = docRef.get().get();
 
@@ -17,7 +17,7 @@ public class UpdateHandler {
       String currentTitle = docSnapshot.getString("title");
 
       if (currentTitle != null && currentTitle.equals(post.getTitle())) {
-        System.out.println("Checked document at: " + Instant.now());
+        System.out.println("Checked " +documentName + " at: " + Instant.now());
         return null;
       } else {
         firestoreDocUpdater.updateDocumentWithPostData(docRef, post);

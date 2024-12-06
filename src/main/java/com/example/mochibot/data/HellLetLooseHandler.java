@@ -31,7 +31,7 @@ public class HellLetLooseHandler {
 
     DocumentReference docRef = datastore.collection("games").document("104");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater);
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Hell Let Loose");
   }
 
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {

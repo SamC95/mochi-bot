@@ -31,7 +31,7 @@ public class TheOldRepublicHandler {
 
     DocumentReference docRef = database.collection("games").document("108");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater);
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Star Wars The Old Republic");
   }
 
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {

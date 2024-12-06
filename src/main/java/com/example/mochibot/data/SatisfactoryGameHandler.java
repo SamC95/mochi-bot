@@ -31,7 +31,7 @@ public class SatisfactoryGameHandler {
 
     DocumentReference docRef = database.collection("games").document("107");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater);
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "SatisfactoryGame");
   }
 
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {

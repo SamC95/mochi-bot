@@ -32,7 +32,7 @@ public class WarThunderHandler {
 
     DocumentReference docRef = database.collection("games").document("109");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater);
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder");
   }
 
   public Mono<Void> runWarThunderTask(GatewayDiscordClient gateway) {

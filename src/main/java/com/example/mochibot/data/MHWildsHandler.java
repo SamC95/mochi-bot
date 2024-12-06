@@ -31,7 +31,7 @@ public class MHWildsHandler {
 
         DocumentReference docRef = database.collection("games").document("105");
 
-        return getUpdate(newsPost, docRef, firestoreDocUpdater);
+        return getUpdate(newsPost, docRef, firestoreDocUpdater, "Monster Hunter Wilds");
     }
 
     public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {

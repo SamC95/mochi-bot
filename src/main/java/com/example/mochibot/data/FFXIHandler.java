@@ -31,7 +31,7 @@ public class FFXIHandler {
 
     DocumentReference docRef = database.collection("games").document("102");
 
-    return getUpdate(topicsPost, docRef, firestoreDocUpdater);
+    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XI");
   }
 
   public Update FFXIInformationHandler()
@@ -42,7 +42,7 @@ public class FFXIHandler {
 
     DocumentReference docRef = database.collection("games").document("103");
 
-    return getUpdate(informationPost, docRef, firestoreDocUpdater);
+    return getUpdate(informationPost, docRef, firestoreDocUpdater, "Final Fantasy XI");
   }
 
   public Mono<Void> runFFXITopicsTask(GatewayDiscordClient gateway) {

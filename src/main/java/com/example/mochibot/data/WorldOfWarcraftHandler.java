@@ -31,7 +31,7 @@ public class WorldOfWarcraftHandler {
 
     DocumentReference docRef = database.collection("games").document("110");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater);
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "World of Warcraft");
   }
 
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
