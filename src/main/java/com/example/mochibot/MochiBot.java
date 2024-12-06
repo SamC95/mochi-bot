@@ -3,6 +3,7 @@ package com.example.mochibot;
 import com.example.mochibot.data.FFXIHandler;
 import com.example.mochibot.data.FFXIVHandler;
 import com.example.mochibot.data.WarThunderHandler;
+import com.example.mochibot.data.WorldOfWarcraftHandler;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
@@ -20,6 +21,7 @@ public class MochiBot {
   FFXIVHandler xivHandler = new FFXIVHandler();
   FFXIHandler xiHandler = new FFXIHandler();
   WarThunderHandler warThunderHandler = new WarThunderHandler();
+  WorldOfWarcraftHandler worldOfWarcraftHandler = new WorldOfWarcraftHandler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -33,28 +35,38 @@ public class MochiBot {
 
   private Mono<Void> initialiseGateway(GatewayDiscordClient gateway) {
 
+    // Final Fantasy XIV Topics Feed
     Schedulers.parallel()
         .schedulePeriodically(
             () -> xivHandler.runFFXIVTopicsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
 
+    // Final Fantasy XIV News Feed
     Schedulers.parallel()
         .schedulePeriodically(
             () -> xivHandler.runFFXIVNewsTask(gateway).subscribe(), 1, 10, TimeUnit.MINUTES);
 
+    // Final Fantasy XI Topics Feed
     Schedulers.parallel()
         .schedulePeriodically(
             () -> xiHandler.runFFXITopicsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
 
+    // Final Fantasy XI Information Feed
     Schedulers.parallel()
         .schedulePeriodically(
             () -> xiHandler.runFFXIInformationTask(gateway).subscribe(), 1, 10, TimeUnit.MINUTES);
 
+    // War Thunder News Feed
     Schedulers.parallel()
         .schedulePeriodically(
             () -> warThunderHandler.runWarThunderTask(gateway).subscribe(),
             0,
             10,
             TimeUnit.MINUTES);
+
+    // World of Warcraft News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> worldOfWarcraftHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }
