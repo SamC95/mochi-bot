@@ -2,6 +2,8 @@ package com.example.mochibot;
 
 import com.example.mochibot.data.FFXIHandler;
 import com.example.mochibot.data.FFXIVHandler;
+import com.example.mochibot.data.HellLetLooseHandler;
+import com.example.mochibot.data.TheOldRepublicHandler;
 import com.example.mochibot.data.WarThunderHandler;
 import com.example.mochibot.data.WorldOfWarcraftHandler;
 import discord4j.core.DiscordClient;
@@ -22,6 +24,8 @@ public class MochiBot {
   FFXIHandler xiHandler = new FFXIHandler();
   WarThunderHandler warThunderHandler = new WarThunderHandler();
   WorldOfWarcraftHandler worldOfWarcraftHandler = new WorldOfWarcraftHandler();
+  HellLetLooseHandler hellLetLooseHandler = new HellLetLooseHandler();
+  TheOldRepublicHandler theOldRepublicHandler = new TheOldRepublicHandler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -67,6 +71,16 @@ public class MochiBot {
     Schedulers.parallel()
         .schedulePeriodically(
             () -> worldOfWarcraftHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+
+    // Hell Let Loose News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> hellLetLooseHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+
+    // Star Wars The Old Republic News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> theOldRepublicHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }
