@@ -3,6 +3,7 @@ package com.example.mochibot;
 import com.example.mochibot.data.FFXIHandler;
 import com.example.mochibot.data.FFXIVHandler;
 import com.example.mochibot.data.HellLetLooseHandler;
+import com.example.mochibot.data.MHWildsHandler;
 import com.example.mochibot.data.TheOldRepublicHandler;
 import com.example.mochibot.data.WarThunderHandler;
 import com.example.mochibot.data.WorldOfWarcraftHandler;
@@ -26,6 +27,7 @@ public class MochiBot {
   WorldOfWarcraftHandler worldOfWarcraftHandler = new WorldOfWarcraftHandler();
   HellLetLooseHandler hellLetLooseHandler = new HellLetLooseHandler();
   TheOldRepublicHandler theOldRepublicHandler = new TheOldRepublicHandler();
+  MHWildsHandler mhWildsHandler = new MHWildsHandler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -81,6 +83,11 @@ public class MochiBot {
     Schedulers.parallel()
         .schedulePeriodically(
             () -> theOldRepublicHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+
+    // Monster Hunter Wilds News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> mhWildsHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }
