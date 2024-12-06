@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutionException;
 
 public class FirestoreDocUpdater {
 
-    public void updateDocumentWithPostData(DocumentReference docRef, Update topicsPost)
+    public void updateDocumentWithPostData(DocumentReference docRef, Update topicsPost, String documentName)
             throws ExecutionException, InterruptedException {
         Map<String, Object> newData = new HashMap<>();
         newData.put("title", topicsPost.getTitle());
@@ -20,6 +20,6 @@ public class FirestoreDocUpdater {
         newData.put("description", topicsPost.getDescription());
 
         WriteResult result = docRef.set(newData).get();
-        System.out.println("Document updated at: " + result.getUpdateTime().toDate());
+        System.out.println(documentName + " document updated at: " + result.getUpdateTime().toDate());
     }
 }

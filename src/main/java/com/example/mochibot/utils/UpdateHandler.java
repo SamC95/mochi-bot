@@ -17,10 +17,10 @@ public class UpdateHandler {
       String currentTitle = docSnapshot.getString("title");
 
       if (currentTitle != null && currentTitle.equals(post.getTitle())) {
-        System.out.println("Checked " +documentName + " at: " + Instant.now());
+        System.out.println("Checked " + documentName + " at: " + Instant.now());
         return null;
       } else {
-        firestoreDocUpdater.updateDocumentWithPostData(docRef, post);
+        firestoreDocUpdater.updateDocumentWithPostData(docRef, post, documentName);
         return post;
       }
     }
