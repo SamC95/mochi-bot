@@ -76,7 +76,7 @@ public class FFXIHandler {
         });
   }
 
-  public void getFFXIUpdate(GatewayDiscordClient gateway, Update post) {
+  private void getFFXIUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("FFXI_CHANNEL_ID");
 
     gateway

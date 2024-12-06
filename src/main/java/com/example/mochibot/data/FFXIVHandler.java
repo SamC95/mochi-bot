@@ -1,12 +1,10 @@
 package com.example.mochibot.data;
 
-import com.example.mochibot.MochiBotApplication;
 import com.example.mochibot.utils.FirestoreDocUpdater;
 import com.example.mochibot.utils.PropertiesLoader;
 import com.example.mochibot.utils.RetrievePostDetails;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
 import discord4j.common.util.Snowflake;
@@ -75,7 +73,7 @@ public class FFXIVHandler {
         });
   }
 
-  public void getFFXIVUpdate(GatewayDiscordClient gateway, Update post) {
+  private void getFFXIVUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("FFXIV_CHANNEL_ID");
 
     gateway

@@ -2,6 +2,7 @@ package com.example.mochibot;
 
 import com.example.mochibot.data.FFXIHandler;
 import com.example.mochibot.data.FFXIVHandler;
+import com.example.mochibot.data.WarThunderHandler;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
@@ -18,6 +19,7 @@ public class MochiBot {
 
   FFXIVHandler xivHandler = new FFXIVHandler();
   FFXIHandler xiHandler = new FFXIHandler();
+  WarThunderHandler warThunderHandler = new WarThunderHandler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -46,6 +48,13 @@ public class MochiBot {
     Schedulers.parallel()
         .schedulePeriodically(
             () -> xiHandler.runFFXIInformationTask(gateway).subscribe(), 1, 10, TimeUnit.MINUTES);
+
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> warThunderHandler.runWarThunderTask(gateway).subscribe(),
+            0,
+            10,
+            TimeUnit.MINUTES);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }
