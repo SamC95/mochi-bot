@@ -32,7 +32,7 @@ public class FFXIHandler implements GameHandler {
 
     DocumentReference docRef = database.collection("games").document("102");
 
-    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XI");
+    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XI topics");
   }
 
   public Update FFXIInformationHandler()
@@ -43,7 +43,7 @@ public class FFXIHandler implements GameHandler {
 
     DocumentReference docRef = database.collection("games").document("103");
 
-    return getUpdate(informationPost, docRef, firestoreDocUpdater, "Final Fantasy XI");
+    return getUpdate(informationPost, docRef, firestoreDocUpdater, "Final Fantasy XI information");
   }
 
   public Mono<Void> runFFXITopicsTask(GatewayDiscordClient gateway) {

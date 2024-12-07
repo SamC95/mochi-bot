@@ -32,7 +32,7 @@ public class FFXIVHandler implements GameHandler  {
 
     DocumentReference docRef = database.collection("games").document("100");
 
-    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV");
+    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV topics");
   }
 
   public Update FFXIVNewsHandler() throws IOException, ExecutionException, InterruptedException {
@@ -42,7 +42,7 @@ public class FFXIVHandler implements GameHandler  {
 
     DocumentReference docRef = database.collection("games").document("101");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV");
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV news");
   }
 
   public Mono<Void> runFFXIVTopicsTask(GatewayDiscordClient gateway) {
