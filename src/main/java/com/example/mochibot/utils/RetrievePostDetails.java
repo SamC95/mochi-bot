@@ -4,7 +4,9 @@ import com.example.scraper.data.FinalFantasyXI;
 import com.example.scraper.data.FinalFantasyXIV;
 import com.example.scraper.data.HellLetLoose;
 import com.example.scraper.data.MonsterHunterWilds;
+import com.example.scraper.data.OldSchoolRuneScape;
 import com.example.scraper.data.Overwatch;
+import com.example.scraper.data.PathOfExile2;
 import com.example.scraper.data.SatisfactoryGame;
 import com.example.scraper.data.TheOldRepublic;
 import com.example.scraper.data.WarThunder;
@@ -25,6 +27,8 @@ public class RetrievePostDetails {
   TheOldRepublic theOldRepublic = new TheOldRepublic(new JsoupConnector());
   WarThunder warThunder = new WarThunder(new JsoupConnector());
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
+  PathOfExile2 pathOfExile2 = new PathOfExile2(new JsoupConnector());
+  OldSchoolRuneScape oldSchoolRuneScape = new OldSchoolRuneScape(new JsoupConnector());
 
   public Update getFinalFantasyXIVNews() throws IOException {
     finalFantasyXIV.getNewsFeed();
@@ -70,6 +74,13 @@ public class RetrievePostDetails {
     return overwatch.update;
   }
 
+  public Update getPathOfExile2News() throws IOException {
+    SteamRSSParser.getSteamRSSNewsFeed(
+            "2694490", pathOfExile2.newsFeed, pathOfExile2.jsoupConnector);
+
+    return pathOfExile2.newsFeed;
+  }
+
   public Update getSatisfactoryGameNews() throws IOException {
     SteamRSSParser.getSteamRSSNewsFeed(
         "526870", satisfactoryGame.newsFeed, satisfactoryGame.jsoupConnector);
@@ -93,5 +104,11 @@ public class RetrievePostDetails {
     worldOfWarcraft.getNewsFeed();
 
     return worldOfWarcraft.newsFeed;
+  }
+
+  public Update getOldSchoolRuneScapeNews() throws IOException {
+    oldSchoolRuneScape.getNewsFeed();
+
+    return oldSchoolRuneScape.newsFeed;
   }
 }

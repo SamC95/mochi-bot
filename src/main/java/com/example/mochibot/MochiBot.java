@@ -4,6 +4,8 @@ import com.example.mochibot.data.FFXIHandler;
 import com.example.mochibot.data.FFXIVHandler;
 import com.example.mochibot.data.HellLetLooseHandler;
 import com.example.mochibot.data.MHWildsHandler;
+import com.example.mochibot.data.OSRSHandler;
+import com.example.mochibot.data.PathOfExile2Handler;
 import com.example.mochibot.data.SatisfactoryGameHandler;
 import com.example.mochibot.data.TheOldRepublicHandler;
 import com.example.mochibot.data.WarThunderHandler;
@@ -30,6 +32,8 @@ public class MochiBot {
   TheOldRepublicHandler theOldRepublicHandler = new TheOldRepublicHandler();
   MHWildsHandler mhWildsHandler = new MHWildsHandler();
   SatisfactoryGameHandler satisfactoryGameHandler = new SatisfactoryGameHandler();
+  PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
+  OSRSHandler osrsHandler = new OSRSHandler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -98,6 +102,16 @@ public class MochiBot {
             5,
             10,
             TimeUnit.MINUTES);
+
+    // Path of Exile 2 News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> poe2Handler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
+
+    // Old School RuneScape News Feed
+    Schedulers.parallel()
+        .schedulePeriodically(
+            () -> osrsHandler.runNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }
