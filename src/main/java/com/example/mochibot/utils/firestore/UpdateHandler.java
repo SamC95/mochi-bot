@@ -5,6 +5,7 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.concurrent.ExecutionException;
 
 public class UpdateHandler {
@@ -17,9 +18,10 @@ public class UpdateHandler {
       String currentTitle = docSnapshot.getString("title");
 
       if (currentTitle != null && currentTitle.equals(post.getTitle())) {
-        System.out.println("Checked " + documentName + " at: " + Instant.now());
+        System.out.printf("[%s] [INFO] No new post for %s\n", LocalTime.now(), documentName);
         return null;
-      } else {
+      }
+      else {
         firestoreDocUpdater.updateDocumentWithPostData(docRef, post, documentName);
         return post;
       }

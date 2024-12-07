@@ -31,37 +31,56 @@ public class PostScheduler {
           new PathOfExile2Handler(), Map.of("initialDelay", 5L, "interval", 10L),
           new OSRSHandler(), Map.of("initialDelay", 5L, "interval", 10L));
 
-  private void scheduleHandler(
-      GameHandler handler,
-      GatewayDiscordClient gateway,
-      long initialDelay,
-      long interval) {
-
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> handler.handleScheduledPost(gateway).subscribe(), initialDelay, interval, TimeUnit.MINUTES);
-  }
-
   public void schedulePeriodicPosts(GatewayDiscordClient gateway) {
     handlerScheduleMap.forEach(
         (handler, scheduleMap) -> {
           long initialDelay = scheduleMap.get("initialDelay");
           long interval = scheduleMap.get("interval");
 
-          scheduleHandler(handler, gateway, initialDelay, interval);
+          Schedulers.parallel()
+              .schedule(
+                  () -> {
+                    handler.handleScheduledPost(gateway).subscribe();
+
+                      System.out.printf(
+                              "[%s] [SCHEDULER] %s executed its first scheduled task\n",
+                              LocalTime.now(), handler.getClass().getSimpleName());
+
+                    // Dynamically schedule the next execution
+                    dynamicScheduler(handler, gateway, interval);
+                  },
+                  initialDelay,
+                  TimeUnit.MINUTES);
         });
+  }
+
+  private void dynamicScheduler(
+      GameHandler handler, GatewayDiscordClient gateway, long defaultInterval) {
+    long interval = setDynamicInterval(defaultInterval);
+
+      System.out.printf(
+              "[%s] [SCHEDULER] %s scheduled to run in %d minutes\n",
+              LocalTime.now(), handler.getClass().getSimpleName(), interval);
+
+    Schedulers.parallel()
+        .schedule(
+            () -> {
+              handler.handleScheduledPost(gateway).subscribe();
+              dynamicScheduler(handler, gateway, defaultInterval);
+            },
+            interval,
+            TimeUnit.MINUTES);
   }
 
   // Unused but potentially useful to reduce load with some refactoring of schedulers
   private long setDynamicInterval(long defaultInterval) {
-      LocalTime now = LocalTime.now();
+    LocalTime now = LocalTime.now();
 
-      // Sets a longer interval during night hours to reduce load when new posts are less likely
-      if (now.isAfter(LocalTime.of(22, 0)) || now.isBefore(LocalTime.of(6, 0))) {
-          return defaultInterval + 20;
-      }
-      else {
-          return defaultInterval;
-      }
+    // Sets a longer interval during night hours to reduce load when new posts are less likely
+    if (now.isAfter(LocalTime.of(22, 0)) || now.isBefore(LocalTime.of(6, 0))) {
+      return defaultInterval + 20;
+    } else {
+      return defaultInterval;
+    }
   }
 }

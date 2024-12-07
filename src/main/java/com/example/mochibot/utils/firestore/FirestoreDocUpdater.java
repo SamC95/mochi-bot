@@ -10,16 +10,19 @@ import java.util.concurrent.ExecutionException;
 
 public class FirestoreDocUpdater {
 
-    public void updateDocumentWithPostData(DocumentReference docRef, Update topicsPost, String documentName)
-            throws ExecutionException, InterruptedException {
-        Map<String, Object> newData = new HashMap<>();
-        newData.put("title", topicsPost.getTitle());
-        newData.put("author", topicsPost.getAuthor());
-        newData.put("url", topicsPost.getUrl());
-        newData.put("imageUrl", topicsPost.getImage());
-        newData.put("description", topicsPost.getDescription());
+  public void updateDocumentWithPostData(
+      DocumentReference docRef, Update topicsPost, String documentName)
+      throws ExecutionException, InterruptedException {
+    Map<String, Object> newData = new HashMap<>();
+    newData.put("title", topicsPost.getTitle());
+    newData.put("author", topicsPost.getAuthor());
+    newData.put("url", topicsPost.getUrl());
+    newData.put("imageUrl", topicsPost.getImage());
+    newData.put("description", topicsPost.getDescription());
 
-        WriteResult result = docRef.set(newData).get();
-        System.out.println(documentName + " document updated at: " + result.getUpdateTime().toDate());
-    }
+    WriteResult result = docRef.set(newData).get();
+    System.out.printf(
+        "[%s} [INFO] New post has been stored and posted for %s\n",
+        result.getUpdateTime().toDate(), documentName);
+  }
 }
