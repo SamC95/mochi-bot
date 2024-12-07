@@ -1,4 +1,4 @@
-package com.example.mochibot.utils;
+package com.example.mochibot.utils.firestore;
 
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutionException;
 
 public class UpdateHandler {
   public static Update getUpdate(
-      Update post, DocumentReference docRef, FirestoreDocUpdater firestoreDocUpdater, String documentName)
+          Update post, DocumentReference docRef, FirestoreDocUpdater firestoreDocUpdater, String documentName)
       throws InterruptedException, ExecutionException {
     DocumentSnapshot docSnapshot = docRef.get().get();
 

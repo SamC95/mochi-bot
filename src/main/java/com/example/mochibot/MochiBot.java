@@ -1,15 +1,6 @@
 package com.example.mochibot;
 
-import com.example.mochibot.data.FFXIHandler;
-import com.example.mochibot.data.FFXIVHandler;
-import com.example.mochibot.data.HellLetLooseHandler;
-import com.example.mochibot.data.MHWildsHandler;
-import com.example.mochibot.data.OSRSHandler;
-import com.example.mochibot.data.PathOfExile2Handler;
-import com.example.mochibot.data.SatisfactoryGameHandler;
-import com.example.mochibot.data.TheOldRepublicHandler;
-import com.example.mochibot.data.WarThunderHandler;
-import com.example.mochibot.data.WorldOfWarcraftHandler;
+import com.example.mochibot.utils.posts.PostScheduler;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
@@ -17,23 +8,11 @@ import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import java.util.concurrent.TimeUnit;
 
 public class MochiBot {
   private final String token;
-
-  FFXIVHandler xivHandler = new FFXIVHandler();
-  FFXIHandler xiHandler = new FFXIHandler();
-  WarThunderHandler warThunderHandler = new WarThunderHandler();
-  WorldOfWarcraftHandler worldOfWarcraftHandler = new WorldOfWarcraftHandler();
-  HellLetLooseHandler hellLetLooseHandler = new HellLetLooseHandler();
-  TheOldRepublicHandler theOldRepublicHandler = new TheOldRepublicHandler();
-  MHWildsHandler mhWildsHandler = new MHWildsHandler();
-  SatisfactoryGameHandler satisfactoryGameHandler = new SatisfactoryGameHandler();
-  PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
-  OSRSHandler osrsHandler = new OSRSHandler();
+  PostScheduler postScheduler = new PostScheduler();
 
   public MochiBot(String token) {
     this.token = token;
@@ -46,72 +25,7 @@ public class MochiBot {
   }
 
   private Mono<Void> initialiseGateway(GatewayDiscordClient gateway) {
-
-    // Final Fantasy XIV Topics Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> xivHandler.runFFXIVTopicsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
-
-    // Final Fantasy XIV News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> xivHandler.runFFXIVNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
-
-    // Final Fantasy XI Topics Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> xiHandler.runFFXITopicsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
-
-    // Final Fantasy XI Information Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> xiHandler.runFFXIInformationTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
-
-    // War Thunder News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> warThunderHandler.runWarThunderTask(gateway).subscribe(),
-            0,
-            10,
-            TimeUnit.MINUTES);
-
-    // World of Warcraft News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> worldOfWarcraftHandler.runNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
-
-    // Hell Let Loose News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> hellLetLooseHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
-
-    // Star Wars The Old Republic News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> theOldRepublicHandler.runNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
-
-    // Monster Hunter Wilds News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> mhWildsHandler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
-
-    // Satisfactory News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> satisfactoryGameHandler.runNewsTask(gateway).subscribe(),
-            5,
-            10,
-            TimeUnit.MINUTES);
-
-    // Path of Exile 2 News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> poe2Handler.runNewsTask(gateway).subscribe(), 0, 10, TimeUnit.MINUTES);
-
-    // Old School RuneScape News Feed
-    Schedulers.parallel()
-        .schedulePeriodically(
-            () -> osrsHandler.runNewsTask(gateway).subscribe(), 5, 10, TimeUnit.MINUTES);
+    postScheduler.schedulePeriodicPosts(gateway);
 
     return Mono.when(handleReadyEvent(gateway), handlePingCommand(gateway));
   }

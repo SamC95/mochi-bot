@@ -1,8 +1,9 @@
 package com.example.mochibot.data;
 
-import com.example.mochibot.utils.FirestoreDocUpdater;
-import com.example.mochibot.utils.PropertiesLoader;
-import com.example.mochibot.utils.RetrievePostDetails;
+import com.example.mochibot.utils.firestore.FirestoreDocUpdater;
+import com.example.mochibot.utils.posts.GameHandler;
+import com.example.mochibot.utils.loaders.PropertiesLoader;
+import com.example.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -18,9 +19,9 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.mochibot.utils.UpdateHandler.getUpdate;
+import static com.example.mochibot.utils.firestore.UpdateHandler.getUpdate;
 
-public class PathOfExile2Handler {
+public class PathOfExile2Handler implements GameHandler {
     RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
     FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
@@ -80,4 +81,8 @@ public class PathOfExile2Handler {
                         })
                 .subscribe();
     }
+
+    @Override
+    public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
+        return runNewsTask(gateway);    }
 }

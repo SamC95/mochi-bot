@@ -1,4 +1,4 @@
-package com.example.mochibot.utils;
+package com.example.mochibot.utils.loaders;
 
 import com.example.mochibot.MochiBotApplication;
 
