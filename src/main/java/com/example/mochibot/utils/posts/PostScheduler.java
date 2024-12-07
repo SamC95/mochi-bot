@@ -72,7 +72,6 @@ public class PostScheduler {
             TimeUnit.MINUTES);
   }
 
-  // Unused but potentially useful to reduce load with some refactoring of schedulers
   private long setDynamicInterval(long defaultInterval) {
     LocalTime now = LocalTime.now();
 
