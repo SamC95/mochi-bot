@@ -9,7 +9,6 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
 
-
 public class MochiBot {
   private final String token;
   PostScheduler postScheduler = new PostScheduler();

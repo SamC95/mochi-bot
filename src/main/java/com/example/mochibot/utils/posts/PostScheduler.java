@@ -13,6 +13,7 @@ import com.example.mochibot.data.WorldOfWarcraftHandler;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -46,7 +47,21 @@ public class PostScheduler {
         (handler, scheduleMap) -> {
           long initialDelay = scheduleMap.get("initialDelay");
           long interval = scheduleMap.get("interval");
-            scheduleHandler(handler, gateway, initialDelay, interval);
+
+          scheduleHandler(handler, gateway, initialDelay, interval);
         });
+  }
+
+  // Unused but potentially useful to reduce load with some refactoring of schedulers
+  private long setDynamicInterval(long defaultInterval) {
+      LocalTime now = LocalTime.now();
+
+      // Sets a longer interval during night hours to reduce load when new posts are less likely
+      if (now.isAfter(LocalTime.of(22, 0)) || now.isBefore(LocalTime.of(6, 0))) {
+          return defaultInterval + 20;
+      }
+      else {
+          return defaultInterval;
+      }
   }
 }
