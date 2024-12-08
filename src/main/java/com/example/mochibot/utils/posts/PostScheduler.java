@@ -24,11 +24,11 @@ public class PostScheduler {
           new FFXIVHandler(), Map.of("initialDelay", 0L, "interval", 10L),
           new WarThunderHandler(), Map.of("initialDelay", 0L, "interval", 10L),
           new WorldOfWarcraftHandler(), Map.of("initialDelay", 0L, "interval", 10L),
-          new HellLetLooseHandler(), Map.of("initialDelay", 0L, "interval", 10L),
+          new HellLetLooseHandler(), Map.of("initialDelay", 5L, "interval", 10L),
           new TheOldRepublicHandler(), Map.of("initialDelay", 5L, "interval", 10L),
           new MHWildsHandler(), Map.of("initialDelay", 5L, "interval", 10L),
           new SatisfactoryGameHandler(), Map.of("initialDelay", 5L, "interval", 10L),
-          new PathOfExile2Handler(), Map.of("initialDelay", 5L, "interval", 10L),
+          new PathOfExile2Handler(), Map.of("initialDelay", 0L, "interval", 10L),
           new OSRSHandler(), Map.of("initialDelay", 5L, "interval", 10L));
 
   public void schedulePeriodicPosts(GatewayDiscordClient gateway) {

@@ -35,6 +35,16 @@ public class PathOfExile2Handler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Path of Exile 2");
   }
 
+  public Update hotfixHandler() throws IOException, ExecutionException, InterruptedException {
+      Update patchPost = retrievePostDetails.getPathOfExile2Hotfix();
+
+      Firestore database = FirestoreClient.getFirestore();
+
+      DocumentReference docRef = database.collection("games").document("113");
+
+      return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2");
+  }
+
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
@@ -46,6 +56,22 @@ public class PathOfExile2Handler implements GameHandler {
             }
           } catch (Exception e) {
             System.err.println("Error while fetching path of exile 2 post: " + e.getMessage());
+          }
+        });
+  }
+
+  public Mono<Void> runHotfixTask(GatewayDiscordClient gateway) {
+    return Mono.fromRunnable(
+        () -> {
+          PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
+          try {
+            Update patchPost = poe2Handler.hotfixHandler();
+            if (patchPost != null) {
+              getPathOfExile2Hotfix(gateway, patchPost);
+            }
+          } catch (Exception e) {
+            System.err.println(
+                "Error while fetching path of exile 2 patch/hotfix post: " + e.getMessage());
           }
         });
   }
@@ -83,8 +109,47 @@ public class PathOfExile2Handler implements GameHandler {
         .subscribe();
   }
 
+  private void getPathOfExile2Hotfix(GatewayDiscordClient gateway, Update post) {
+    var channelId = PropertiesLoader.loadProperties("POE2_CHANNEL_ID");
+    String formattedDate = DateFormatter.getFormattedDate();
+
+    gateway
+        .getChannelById(Snowflake.of(channelId))
+        .ofType(TextChannel.class)
+        .flatMap(
+            channel -> {
+              String image =
+                  post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
+                      ? post.getImage()
+                      : "";
+
+              String description =
+                  post.getDescription() != null
+                          && !Objects.equals(post.getDescription(), "No description available")
+                      ? post.getDescription()
+                      : "";
+
+              EmbedCreateSpec embed =
+                  EmbedCreateSpec.builder()
+                      .author(
+                          "Path of Exile 2, " + post.getAuthor(),
+                          "https://www.pathofexile.com/forum/view-forum/2212",
+                          "")
+                      .title(post.getTitle())
+                      .url(post.getUrl())
+                      .image(image)
+                      .description(description)
+                      .thumbnail(
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/poe2-logo.png?raw=true")
+                      .footer("News provided by MochiBot • " + formattedDate, "")
+                      .build();
+              return channel.createMessage(embed);
+            })
+        .subscribe();
+  }
+
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runNewsTask(gateway);
+    return runNewsTask(gateway).then(runHotfixTask(gateway));
   }
 }

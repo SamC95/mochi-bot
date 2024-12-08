@@ -81,6 +81,12 @@ public class RetrievePostDetails {
     return pathOfExile2.newsFeed;
   }
 
+  public Update getPathOfExile2Hotfix() throws IOException {
+    pathOfExile2.getPatchNotes();
+
+    return pathOfExile2.patchFeed;
+  }
+
   public Update getSatisfactoryGameNews() throws IOException {
     SteamRSSParser.getSteamRSSNewsFeed(
         "526870", satisfactoryGame.newsFeed, satisfactoryGame.jsoupConnector);
