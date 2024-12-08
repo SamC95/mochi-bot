@@ -1,6 +1,7 @@
 package com.example.mochibot.data;
 
 import com.example.mochibot.utils.firestore.FirestoreDocUpdater;
+import com.example.mochibot.utils.posts.DateFormatter;
 import com.example.mochibot.utils.posts.GameHandler;
 import com.example.mochibot.utils.loaders.PropertiesLoader;
 import com.example.mochibot.utils.posts.RetrievePostDetails;
@@ -15,7 +16,6 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -77,8 +77,9 @@ public class FFXIVHandler implements GameHandler  {
 
   private void getFFXIVUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("FFXIV_CHANNEL_ID");
+      String formattedDate = DateFormatter.getFormattedDate();
 
-    gateway
+      gateway
         .getChannelById(Snowflake.of(channelId))
         .ofType(TextChannel.class)
         .flatMap(
@@ -96,7 +97,7 @@ public class FFXIVHandler implements GameHandler  {
                       .image(image)
                       .description(post.getDescription())
                       .thumbnail("https://lodestonenews.com/images/thumbnail.png")
-                      .timestamp(Instant.now())
+                      .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
             })

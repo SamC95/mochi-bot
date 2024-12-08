@@ -1,6 +1,7 @@
 package com.example.mochibot.data;
 
 import com.example.mochibot.utils.firestore.FirestoreDocUpdater;
+import com.example.mochibot.utils.posts.DateFormatter;
 import com.example.mochibot.utils.posts.GameHandler;
 import com.example.mochibot.utils.loaders.PropertiesLoader;
 import com.example.mochibot.utils.posts.RetrievePostDetails;
@@ -15,7 +16,6 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -80,6 +80,7 @@ public class FFXIHandler implements GameHandler {
 
   private void getFFXIUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("FFXI_CHANNEL_ID");
+    String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
         .getChannelById(Snowflake.of(channelId))
@@ -103,7 +104,7 @@ public class FFXIHandler implements GameHandler {
                       .description(post.getDescription())
                       .thumbnail(
                           "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/final-fantasy-xi-logo.png?raw=true")
-                      .timestamp(Instant.now())
+                      .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
             })

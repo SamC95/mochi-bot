@@ -42,9 +42,9 @@ public class PostScheduler {
                   () -> {
                     handler.handleScheduledPost(gateway).subscribe();
 
-                      System.out.printf(
-                              "[%s] [SCHEDULER] %s executed its first scheduled task\n",
-                              LocalTime.now(), handler.getClass().getSimpleName());
+                    System.out.printf(
+                        "[%s] [SCHEDULER] %s executed its first scheduled task\n",
+                        LocalTime.now(), handler.getClass().getSimpleName());
 
                     // Dynamically schedule the next execution
                     dynamicScheduler(handler, gateway, interval);
@@ -58,9 +58,9 @@ public class PostScheduler {
       GameHandler handler, GatewayDiscordClient gateway, long defaultInterval) {
     long interval = setDynamicInterval(defaultInterval);
 
-      System.out.printf(
-              "[%s] [SCHEDULER] %s scheduled to run in %d minutes\n",
-              LocalTime.now(), handler.getClass().getSimpleName(), interval);
+    System.out.printf(
+        "[%s] [SCHEDULER] %s scheduled to run in %d minutes\n",
+        LocalTime.now(), handler.getClass().getSimpleName(), interval);
 
     Schedulers.parallel()
         .schedule(
@@ -78,7 +78,8 @@ public class PostScheduler {
     // Sets a longer interval during night hours to reduce load when new posts are less likely
     if (now.isAfter(LocalTime.of(22, 0)) || now.isBefore(LocalTime.of(6, 0))) {
       return defaultInterval + 20;
-    } else {
+    }
+    else {
       return defaultInterval;
     }
   }

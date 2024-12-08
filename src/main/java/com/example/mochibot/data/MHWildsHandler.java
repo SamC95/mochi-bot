@@ -1,6 +1,7 @@
 package com.example.mochibot.data;
 
 import com.example.mochibot.utils.firestore.FirestoreDocUpdater;
+import com.example.mochibot.utils.posts.DateFormatter;
 import com.example.mochibot.utils.posts.GameHandler;
 import com.example.mochibot.utils.loaders.PropertiesLoader;
 import com.example.mochibot.utils.posts.RetrievePostDetails;
@@ -15,53 +16,53 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import static com.example.mochibot.utils.firestore.UpdateHandler.getUpdate;
 
 public class MHWildsHandler implements GameHandler {
-    RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-    FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
+  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-    public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
-        Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
+  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+    Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
 
-        Firestore database = FirestoreClient.getFirestore();
+    Firestore database = FirestoreClient.getFirestore();
 
-        DocumentReference docRef = database.collection("games").document("105");
+    DocumentReference docRef = database.collection("games").document("105");
 
-        return getUpdate(newsPost, docRef, firestoreDocUpdater, "Monster Hunter Wilds");
-    }
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Monster Hunter Wilds");
+  }
 
-    public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
-        return Mono.fromRunnable(
-                () -> {
-                    MHWildsHandler mhWildshandler = new MHWildsHandler();
-                    try {
-                        Update newsPost = mhWildshandler.newsHandler();
-                        if (newsPost != null) {
-                            getMonsterHunterWildsUpdate(gateway, newsPost);
-                        }
-                    } catch (Exception e) {
-                        System.err.println("Error while fetching mh wilds update: " + e.getMessage());
-                    }
-                });
-    }
+  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+    return Mono.fromRunnable(
+        () -> {
+          MHWildsHandler mhWildshandler = new MHWildsHandler();
+          try {
+            Update newsPost = mhWildshandler.newsHandler();
+            if (newsPost != null) {
+              getMonsterHunterWildsUpdate(gateway, newsPost);
+            }
+          } catch (Exception e) {
+            System.err.println("Error while fetching mh wilds update: " + e.getMessage());
+          }
+        });
+  }
 
-    private void getMonsterHunterWildsUpdate(GatewayDiscordClient gateway, Update post) {
-        var channelId = PropertiesLoader.loadProperties("MHWILDS_CHANNEL_ID");
+  private void getMonsterHunterWildsUpdate(GatewayDiscordClient gateway, Update post) {
+    var channelId = PropertiesLoader.loadProperties("MHWILDS_CHANNEL_ID");
+    String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
         .getChannelById(Snowflake.of(channelId))
         .ofType(TextChannel.class)
         .flatMap(
             channel -> {
-                String image =
-                        post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
-                                ? post.getImage()
-                                : "";
+              String image =
+                  post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
+                      ? post.getImage()
+                      : "";
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
@@ -75,14 +76,15 @@ public class MHWildsHandler implements GameHandler {
                       .description(post.getDescription())
                       .thumbnail(
                           "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/mhwilds-logo.png?raw=true")
-                      .timestamp(Instant.now())
+                      .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
             })
         .subscribe();
-    }
+  }
 
-    @Override
-    public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-        return runNewsTask(gateway);    }
+  @Override
+  public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
+    return runNewsTask(gateway);
+  }
 }
