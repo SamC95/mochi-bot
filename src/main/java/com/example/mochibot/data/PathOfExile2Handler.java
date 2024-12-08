@@ -32,7 +32,7 @@ public class PathOfExile2Handler implements GameHandler {
 
     DocumentReference docRef = database.collection("games").document("111");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Path of Exile 2");
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Path of Exile 2 Steam hub");
   }
 
   public Update hotfixHandler() throws IOException, ExecutionException, InterruptedException {
@@ -42,7 +42,7 @@ public class PathOfExile2Handler implements GameHandler {
 
       DocumentReference docRef = database.collection("games").document("113");
 
-      return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2");
+      return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2 hotfixes");
   }
 
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
