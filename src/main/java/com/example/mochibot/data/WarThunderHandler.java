@@ -32,7 +32,7 @@ public class WarThunderHandler implements GameHandler {
 
       DocumentReference docRef = database.collection("games").document("114");
 
-      return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder");
+      return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder (pinned)");
   }
 
   public Update WarThunderUnpinnedNewsHandler()
@@ -43,7 +43,7 @@ public class WarThunderHandler implements GameHandler {
 
     DocumentReference docRef = database.collection("games").document("109");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder");
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder (unpinned)");
   }
 
   public Mono<Void> runWarThunderPinnedTask(GatewayDiscordClient gateway) {
