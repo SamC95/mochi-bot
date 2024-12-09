@@ -25,9 +25,19 @@ public class WarThunderHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update WarThunderNewsHandler()
+  public Update WarThunderPinnedNewsHandler() throws ExecutionException, InterruptedException, IOException {
+      Update newsPost = retrievePostDetails.getWarThunderPinnedNews();
+
+      Firestore database = FirestoreClient.getFirestore();
+
+      DocumentReference docRef = database.collection("games").document("114");
+
+      return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder");
+  }
+
+  public Update WarThunderUnpinnedNewsHandler()
       throws IOException, ExecutionException, InterruptedException {
-    Update newsPost = retrievePostDetails.getWarThunderNews();
+    Update newsPost = retrievePostDetails.getWarThunderUnpinnedNews();
 
     Firestore database = FirestoreClient.getFirestore();
 
@@ -36,13 +46,29 @@ public class WarThunderHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder");
   }
 
-  public Mono<Void> runWarThunderTask(GatewayDiscordClient gateway) {
+  public Mono<Void> runWarThunderPinnedTask(GatewayDiscordClient gateway) {
+      return Mono.fromRunnable(
+              () -> {
+                  WarThunderHandler warThunderHandler = new WarThunderHandler();
+
+                  try {
+                      Update newsPost = warThunderHandler.WarThunderPinnedNewsHandler();
+                      if (newsPost != null) {
+                          getWarThunderUpdate(gateway, newsPost);
+                      }
+                  } catch (Exception e) {
+                      System.err.println("Exception while fetching war thunder update: " + e.getMessage());
+                  }
+              });
+  }
+
+  public Mono<Void> runWarThunderUnpinnedTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           WarThunderHandler warThunderHandler = new WarThunderHandler();
 
           try {
-            Update newsPost = warThunderHandler.WarThunderNewsHandler();
+            Update newsPost = warThunderHandler.WarThunderUnpinnedNewsHandler();
             if (newsPost != null) {
               getWarThunderUpdate(gateway, newsPost);
             }
@@ -84,6 +110,6 @@ public class WarThunderHandler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runWarThunderTask(gateway);
+    return runWarThunderUnpinnedTask(gateway).then(runWarThunderPinnedTask(gateway));
   }
 }

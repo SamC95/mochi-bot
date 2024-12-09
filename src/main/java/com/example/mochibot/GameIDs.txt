@@ -7,7 +7,7 @@ Monster Hunter Wilds    | 105 |
 Overwatch               | 106 |
 Satisfactory            | 107 |
 The Old Republic        | 108 |
-War Thunder             | 109 |
+War Thunder             | 109 | 114 |
 World of Warcraft       | 110 |
 Path of Exile 2         | 111 | 113 |
 Old School RuneScape    | 112 |

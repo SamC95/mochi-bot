@@ -100,10 +100,16 @@ public class RetrievePostDetails {
     return theOldRepublic.newsFeed;
   }
 
-  public Update getWarThunderNews() throws IOException {
-    warThunder.getNewsFeed();
+  public Update getWarThunderPinnedNews() throws IOException {
+    warThunder.getPinnedNews();
 
-    return warThunder.newsFeed;
+    return warThunder.pinnedNewsFeed;
+  }
+
+  public Update getWarThunderUnpinnedNews() throws IOException {
+    warThunder.getUnpinnedNews();
+
+    return warThunder.unpinnedNewsFeed;
   }
 
   public Update getWorldOfWarcraftNews() throws IOException {
