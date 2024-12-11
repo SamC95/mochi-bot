@@ -16,6 +16,7 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -55,7 +56,9 @@ public class PathOfExile2Handler implements GameHandler {
               getPathOfExile2Update(gateway, newsPost);
             }
           } catch (Exception e) {
-            System.err.println("Error while fetching path of exile 2 post: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Path of Exile 2 steam news update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }
@@ -70,8 +73,9 @@ public class PathOfExile2Handler implements GameHandler {
               getPathOfExile2Hotfix(gateway, patchPost);
             }
           } catch (Exception e) {
-            System.err.println(
-                "Error while fetching path of exile 2 patch/hotfix post: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Path of Exile 2 patch/hotfix update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }

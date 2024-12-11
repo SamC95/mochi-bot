@@ -16,6 +16,7 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -45,7 +46,9 @@ public class MHWildsHandler implements GameHandler {
               getMonsterHunterWildsUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-            System.err.println("Error while fetching mh wilds update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Monster Hunter: Wilds steam news update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }

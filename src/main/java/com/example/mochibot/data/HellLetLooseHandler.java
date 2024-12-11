@@ -16,6 +16,7 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -45,7 +46,9 @@ public class HellLetLooseHandler implements GameHandler {
               getHellLetLooseUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-            System.err.println("Error while fetching Hell Let Loose update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Hell Let Loose update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }

@@ -16,6 +16,7 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -57,7 +58,9 @@ public class WarThunderHandler implements GameHandler {
                           getWarThunderUpdate(gateway, newsPost);
                       }
                   } catch (Exception e) {
-                      System.err.println("Exception while fetching war thunder update: " + e.getMessage());
+                      System.err.printf(
+                              "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                              LocalTime.now(), e.getMessage());
                   }
               });
   }
@@ -73,7 +76,9 @@ public class WarThunderHandler implements GameHandler {
               getWarThunderUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-            System.err.println("Exception while fetching war thunder update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }

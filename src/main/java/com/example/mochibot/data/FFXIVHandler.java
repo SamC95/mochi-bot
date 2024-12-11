@@ -16,6 +16,7 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -55,7 +56,9 @@ public class FFXIVHandler implements GameHandler  {
               getFFXIVUpdate(gateway, topicsPost);
             }
           } catch (Exception e) {
-            System.err.println("Error while fetching lodestone update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone topics update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }
@@ -70,7 +73,9 @@ public class FFXIVHandler implements GameHandler  {
               getFFXIVUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-            System.err.println("Error while fetching lodestone update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone news update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }

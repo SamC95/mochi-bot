@@ -16,6 +16,7 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
@@ -57,7 +58,9 @@ public class FFXIHandler implements GameHandler {
             }
           }
           catch (IOException | ExecutionException | InterruptedException e) {
-            System.err.println("Error while fetching PlayOnline update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline topics update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }
@@ -73,7 +76,9 @@ public class FFXIHandler implements GameHandler {
             }
           }
           catch (IOException | ExecutionException | InterruptedException e) {
-            System.err.println("Error while fetching PlayOnline update: " + e.getMessage());
+              System.err.printf(
+                      "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline information update: %s\n",
+                      LocalTime.now(), e.getMessage());
           }
         });
   }
