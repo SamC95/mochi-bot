@@ -4,6 +4,7 @@ import com.example.mochibot.MochiBotApplication;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalTime;
 import java.util.Properties;
 
 public class PropertiesLoader {
@@ -12,12 +13,12 @@ public class PropertiesLoader {
 
         try (InputStream input = MochiBotApplication.class.getClassLoader().getResourceAsStream("application.properties")) {
             if (input == null) {
-                throw new RuntimeException("Error retrieving application.properties");
+                System.err.printf("[%s] [ERROR] Unable to find application.properties", LocalTime.now());
             }
             properties.load(input);
         }
         catch (IOException e) {
-            throw new RuntimeException("Failed to load application.properties", e);
+            System.err.printf("[%s] [ERROR] Failed to load application.properties", LocalTime.now());
         }
 
         return properties.getProperty(desiredProperty);

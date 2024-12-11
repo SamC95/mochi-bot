@@ -9,6 +9,8 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalTime;
+
 public class MochiBot {
   private final String token;
   PostScheduler postScheduler = new PostScheduler();
@@ -53,7 +55,8 @@ public class MochiBot {
                     () -> {
                       User self = event.getSelf();
                       System.out.printf(
-                          "Logged in as %s#%s%n", self.getUsername(), self.getDiscriminator());
+                          "[%s] [INFO] Logged in as %s#%s%n",
+                          LocalTime.now(), self.getUsername(), self.getDiscriminator());
                     }))
         .then();
   }
