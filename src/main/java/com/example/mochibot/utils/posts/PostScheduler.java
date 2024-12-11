@@ -13,6 +13,8 @@ import com.example.mochibot.data.WorldOfWarcraftHandler;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -74,10 +76,14 @@ public class PostScheduler {
 
   private long setDynamicInterval(long defaultInterval) {
     LocalTime now = LocalTime.now();
+    DayOfWeek day = LocalDate.now().getDayOfWeek();
 
-    // Sets a longer interval during night hours to reduce load when new posts are less likely
+    // Adjusts interval based on time/day to optimise load
     if (now.isAfter(LocalTime.of(22, 0)) || now.isBefore(LocalTime.of(6, 0))) {
-      return defaultInterval + 20;
+      return defaultInterval + 20; // Longer interval during the nighttime hours.
+    }
+    else if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
+        return defaultInterval + 10; // Longer interval on weekends
     }
     else {
       return defaultInterval;
