@@ -37,13 +37,13 @@ public class PathOfExile2Handler implements GameHandler {
   }
 
   public Update hotfixHandler() throws IOException, ExecutionException, InterruptedException {
-      Update patchPost = retrievePostDetails.getPathOfExile2Hotfix();
+    Update patchPost = retrievePostDetails.getPathOfExile2Hotfix();
 
-      Firestore database = FirestoreClient.getFirestore();
+    Firestore database = FirestoreClient.getFirestore();
 
-      DocumentReference docRef = database.collection("games").document("113");
+    DocumentReference docRef = database.collection("games").document("113");
 
-      return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2 hotfixes");
+    return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2 hotfixes");
   }
 
   public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
@@ -56,9 +56,9 @@ public class PathOfExile2Handler implements GameHandler {
               getPathOfExile2Update(gateway, newsPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Path of Exile 2 steam news update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Path of Exile 2 steam news update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
@@ -74,9 +74,9 @@ public class PathOfExile2Handler implements GameHandler {
               getPathOfExile2Hotfix(gateway, patchPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Path of Exile 2 patch/hotfix update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Path of Exile 2 patch/hotfix update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
