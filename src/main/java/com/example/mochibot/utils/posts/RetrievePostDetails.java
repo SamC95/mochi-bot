@@ -3,6 +3,7 @@ package com.example.mochibot.utils.posts;
 import com.example.scraper.data.FinalFantasyXI;
 import com.example.scraper.data.FinalFantasyXIV;
 import com.example.scraper.data.HellLetLoose;
+import com.example.scraper.data.MarvelRivals;
 import com.example.scraper.data.MonsterHunterWilds;
 import com.example.scraper.data.OldSchoolRuneScape;
 import com.example.scraper.data.Overwatch;
@@ -29,6 +30,7 @@ public class RetrievePostDetails {
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
   PathOfExile2 pathOfExile2 = new PathOfExile2(new JsoupConnector());
   OldSchoolRuneScape oldSchoolRuneScape = new OldSchoolRuneScape(new JsoupConnector());
+  MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
 
   public Update getFinalFantasyXIVNews() throws IOException {
     finalFantasyXIV.getNewsFeed();
@@ -122,5 +124,23 @@ public class RetrievePostDetails {
     oldSchoolRuneScape.getNewsFeed();
 
     return oldSchoolRuneScape.newsFeed;
+  }
+
+  public Update getMarvelRivalsAnnouncements() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/news/", marvelRivals.announcementFeed);
+
+    return marvelRivals.announcementFeed;
+  }
+
+  public Update getMarvelRivalsDevDiaries() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/devdiaries/", marvelRivals.devDiaryFeed);
+
+    return marvelRivals.devDiaryFeed;
+  }
+
+  public Update getMarvelRivalsUpdates() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/gameupdate/", marvelRivals.updateFeed);
+
+    return marvelRivals.updateFeed;
   }
 }

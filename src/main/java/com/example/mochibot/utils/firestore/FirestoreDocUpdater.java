@@ -11,11 +11,13 @@ import java.util.concurrent.ExecutionException;
 
 public class FirestoreDocUpdater {
 
-  public void updateDocumentWithPostData(
-      DocumentReference docRef, Update post, String documentName) throws ExecutionException, InterruptedException {
+  public void updateDocumentWithPostData(DocumentReference docRef, Update post, String documentName)
+      throws ExecutionException, InterruptedException {
 
     if (post == null || post.getTitle() == null || post.getUrl() == null) {
-      System.err.printf("[%s] [ERROR] Post data is invalid or missing, skipping update.\n", LocalTime.now());
+      System.err.printf(
+          "[%s] [ERROR] Post data for %s is invalid or missing, skipping update.\n",
+          LocalTime.now(), documentName);
       return;
     }
 
