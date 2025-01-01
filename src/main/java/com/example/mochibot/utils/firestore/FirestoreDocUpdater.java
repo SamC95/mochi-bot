@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class FirestoreDocUpdater {
 
-  public void updateDocumentWithPostData(DocumentReference docRef, Update post, String documentName) {
+  public void updateDocumentWithPostData(
+      DocumentReference docRef, Update post, String documentName) {
 
     if (post == null || post.getTitle() == null || post.getUrl() == null) {
       System.err.printf(
@@ -28,7 +29,6 @@ public class FirestoreDocUpdater {
 
     docRef.set(newData);
     System.out.printf(
-        "[%s} [INFO] New post has been stored and posted for %s\n",
-        LocalTime.now(), documentName);
+        "[%s} [INFO] New post has been stored and posted for %s\n", LocalTime.now(), documentName);
   }
 }

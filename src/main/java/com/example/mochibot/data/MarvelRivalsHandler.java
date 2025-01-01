@@ -28,9 +28,7 @@ public class MarvelRivalsHandler implements GameHandler {
 
   public Update announcementHandler() throws ExecutionException, InterruptedException, IOException {
     Update announcementPost = retrievePostDetails.getMarvelRivalsAnnouncements();
-
     Firestore database = FirestoreClient.getFirestore();
-
     DocumentReference docRef = database.collection("games").document("115");
 
     return getUpdate(announcementPost, docRef, firestoreDocUpdater, "Marvel Rivals announcements");
@@ -38,9 +36,7 @@ public class MarvelRivalsHandler implements GameHandler {
 
   public Update devDiaryHandler() throws ExecutionException, InterruptedException, IOException {
     Update devDiaryPost = retrievePostDetails.getMarvelRivalsDevDiaries();
-
     Firestore database = FirestoreClient.getFirestore();
-
     DocumentReference docRef = database.collection("games").document("116");
 
     return getUpdate(devDiaryPost, docRef, firestoreDocUpdater, "Marvel Rivals dev diaries");
@@ -48,9 +44,7 @@ public class MarvelRivalsHandler implements GameHandler {
 
   public Update updateHandler() throws ExecutionException, InterruptedException, IOException {
     Update updatePost = retrievePostDetails.getMarvelRivalsUpdates();
-
     Firestore database = FirestoreClient.getFirestore();
-
     DocumentReference docRef = database.collection("games").document("117");
 
     return getUpdate(updatePost, docRef, firestoreDocUpdater, "Marvel Rivals updates");
