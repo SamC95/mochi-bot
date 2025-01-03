@@ -103,7 +103,7 @@ public class MarvelRivalsHandler implements GameHandler {
   }
 
   public void getMarvelRivalsPost(GatewayDiscordClient gateway, Update post, String authorUrl) {
-    var channelId = PropertiesLoader.loadProperties("MARVEL-RIVALS_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("MARVEL_RIVALS_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
