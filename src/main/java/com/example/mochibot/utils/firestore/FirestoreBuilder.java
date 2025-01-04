@@ -10,6 +10,7 @@ import java.io.IOException;
 
 public class FirestoreBuilder {
     public void setUpFirebase() throws IOException {
+        // File not included on GitHub repo
         FileInputStream serviceAccount = new FileInputStream("src/main/resources/mochi-bot.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
