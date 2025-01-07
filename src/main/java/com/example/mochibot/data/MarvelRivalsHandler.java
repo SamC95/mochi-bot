@@ -57,7 +57,8 @@ public class MarvelRivalsHandler implements GameHandler {
           try {
             Update announcementPost = marvelRivalsHandler.announcementHandler();
             if (announcementPost != null) {
-              getMarvelRivalsPost(gateway, announcementPost, "https://www.marvelrivals.com/news/");
+              getMarvelRivalsPost(
+                  gateway, announcementPost, "https://www.marvelrivals.com/news/", "Announcement");
             }
           } catch (Exception e) {
             System.err.printf(
@@ -75,7 +76,7 @@ public class MarvelRivalsHandler implements GameHandler {
             Update devDiaryPost = marvelRivalsHandler.devDiaryHandler();
             if (devDiaryPost != null) {
               getMarvelRivalsPost(
-                  gateway, devDiaryPost, "https://www.marvelrivals.com/devdiaries/");
+                  gateway, devDiaryPost, "https://www.marvelrivals.com/devdiaries/", "Dev Diaries");
             }
           } catch (Exception e) {
             System.err.printf(
@@ -92,7 +93,8 @@ public class MarvelRivalsHandler implements GameHandler {
           try {
             Update updatePost = marvelRivalsHandler.updateHandler();
             if (updatePost != null) {
-              getMarvelRivalsPost(gateway, updatePost, "https://www.marvelrivals.com/gameupdate/");
+              getMarvelRivalsPost(
+                  gateway, updatePost, "https://www.marvelrivals.com/gameupdate/", "Game Update");
             }
           } catch (Exception e) {
             System.err.printf(
@@ -102,7 +104,8 @@ public class MarvelRivalsHandler implements GameHandler {
         });
   }
 
-  public void getMarvelRivalsPost(GatewayDiscordClient gateway, Update post, String authorUrl) {
+  public void getMarvelRivalsPost(
+      GatewayDiscordClient gateway, Update post, String authorUrl, String category) {
     var channelId = PropertiesLoader.loadProperties("MARVEL_RIVALS_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
@@ -118,7 +121,7 @@ public class MarvelRivalsHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author("Marvel Rivals", authorUrl, "")
+                      .author("Marvel Rivals: " + category, authorUrl, "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
