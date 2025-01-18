@@ -26,7 +26,8 @@ public class MarvelRivalsHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update announcementHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update announcementHandler()
+      throws ExecutionException, InterruptedException, IOException {
     Update announcementPost = retrievePostDetails.getMarvelRivalsAnnouncements();
     Firestore database = FirestoreClient.getFirestore();
     DocumentReference docRef = database.collection("games").document("115");
@@ -34,7 +35,7 @@ public class MarvelRivalsHandler implements GameHandler {
     return getUpdate(announcementPost, docRef, firestoreDocUpdater, "Marvel Rivals announcements");
   }
 
-  public Update devDiaryHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update devDiaryHandler() throws ExecutionException, InterruptedException, IOException {
     Update devDiaryPost = retrievePostDetails.getMarvelRivalsDevDiaries();
     Firestore database = FirestoreClient.getFirestore();
     DocumentReference docRef = database.collection("games").document("116");
@@ -42,7 +43,7 @@ public class MarvelRivalsHandler implements GameHandler {
     return getUpdate(devDiaryPost, docRef, firestoreDocUpdater, "Marvel Rivals dev diaries");
   }
 
-  public Update updateHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update updateHandler() throws ExecutionException, InterruptedException, IOException {
     Update updatePost = retrievePostDetails.getMarvelRivalsUpdates();
     Firestore database = FirestoreClient.getFirestore();
     DocumentReference docRef = database.collection("games").document("117");
@@ -50,14 +51,14 @@ public class MarvelRivalsHandler implements GameHandler {
     return getUpdate(updatePost, docRef, firestoreDocUpdater, "Marvel Rivals updates");
   }
 
-  public Mono<Void> runAnnouncementTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runAnnouncementTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           MarvelRivalsHandler marvelRivalsHandler = new MarvelRivalsHandler();
           try {
             Update announcementPost = marvelRivalsHandler.announcementHandler();
             if (announcementPost != null) {
-              getMarvelRivalsPost(
+              postUpdate(
                   gateway, announcementPost, "https://www.marvelrivals.com/news/", "Announcement");
             }
           } catch (Exception e) {
@@ -68,14 +69,14 @@ public class MarvelRivalsHandler implements GameHandler {
         });
   }
 
-  public Mono<Void> runDevDiaryTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runDevDiaryTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           MarvelRivalsHandler marvelRivalsHandler = new MarvelRivalsHandler();
           try {
             Update devDiaryPost = marvelRivalsHandler.devDiaryHandler();
             if (devDiaryPost != null) {
-              getMarvelRivalsPost(
+              postUpdate(
                   gateway, devDiaryPost, "https://www.marvelrivals.com/devdiaries/", "Dev Diaries");
             }
           } catch (Exception e) {
@@ -86,14 +87,14 @@ public class MarvelRivalsHandler implements GameHandler {
         });
   }
 
-  public Mono<Void> runUpdateTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runUpdateTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           MarvelRivalsHandler marvelRivalsHandler = new MarvelRivalsHandler();
           try {
             Update updatePost = marvelRivalsHandler.updateHandler();
             if (updatePost != null) {
-              getMarvelRivalsPost(
+              postUpdate(
                   gateway, updatePost, "https://www.marvelrivals.com/gameupdate/", "Game Update");
             }
           } catch (Exception e) {
@@ -104,7 +105,7 @@ public class MarvelRivalsHandler implements GameHandler {
         });
   }
 
-  public void getMarvelRivalsPost(
+  private void postUpdate(
       GatewayDiscordClient gateway, Update post, String authorUrl, String category) {
     var channelId = PropertiesLoader.loadProperties("MARVEL_RIVALS_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();

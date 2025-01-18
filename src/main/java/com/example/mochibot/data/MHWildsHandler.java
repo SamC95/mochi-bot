@@ -26,7 +26,7 @@ public class MHWildsHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,24 +36,24 @@ public class MHWildsHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Monster Hunter Wilds");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           MHWildsHandler mhWildshandler = new MHWildsHandler();
           try {
             Update newsPost = mhWildshandler.newsHandler();
             if (newsPost != null) {
-              getMonsterHunterWildsUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Monster Hunter: Wilds steam news update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Monster Hunter: Wilds steam news update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  private void getMonsterHunterWildsUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("MHWILDS_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 

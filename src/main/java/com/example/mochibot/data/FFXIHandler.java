@@ -26,7 +26,8 @@ public class FFXIHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update FFXITopicsHandler() throws IOException, ExecutionException, InterruptedException {
+  // Topics news feed
+  private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
     Update topicsPost = retrievePostDetails.getFinalFantasyXITopics();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,8 +37,8 @@ public class FFXIHandler implements GameHandler {
     return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XI topics");
   }
 
-  public Update FFXIInformationHandler()
-      throws IOException, ExecutionException, InterruptedException {
+  // Information news feed
+  private Update informationHandler() throws IOException, ExecutionException, InterruptedException {
     Update informationPost = retrievePostDetails.getFinalFantasyXIInformation();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -47,38 +48,36 @@ public class FFXIHandler implements GameHandler {
     return getUpdate(informationPost, docRef, firestoreDocUpdater, "Final Fantasy XI information");
   }
 
-  public Mono<Void> runFFXITopicsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           FFXIHandler xiHandler = new FFXIHandler();
           try {
-            Update topicsPost = xiHandler.FFXITopicsHandler();
+            Update topicsPost = xiHandler.topicsHandler();
             if (topicsPost != null) {
-                getFFXIUpdate(gateway, topicsPost);
+              getFFXIUpdate(gateway, topicsPost);
             }
-          }
-          catch (IOException | ExecutionException | InterruptedException e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline topics update: %s\n",
-                      LocalTime.now(), e.getMessage());
+          } catch (IOException | ExecutionException | InterruptedException e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline topics update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  public Mono<Void> runFFXIInformationTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runInformationTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           FFXIHandler xiHandler = new FFXIHandler();
           try {
-            Update informationPost = xiHandler.FFXIInformationHandler();
+            Update informationPost = xiHandler.informationHandler();
             if (informationPost != null) {
-                getFFXIUpdate(gateway, informationPost);
+              getFFXIUpdate(gateway, informationPost);
             }
-          }
-          catch (IOException | ExecutionException | InterruptedException e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline information update: %s\n",
-                      LocalTime.now(), e.getMessage());
+          } catch (IOException | ExecutionException | InterruptedException e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline information update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
@@ -92,10 +91,10 @@ public class FFXIHandler implements GameHandler {
         .ofType(TextChannel.class)
         .flatMap(
             channel -> {
-                String image =
-                        post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
-                                ? post.getImage()
-                                : "";
+              String image =
+                  post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
+                      ? post.getImage()
+                      : "";
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
@@ -117,7 +116,7 @@ public class FFXIHandler implements GameHandler {
   }
 
   @Override
-    public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-        return runFFXITopicsTask(gateway).then(runFFXIInformationTask(gateway));
+  public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
+    return runTopicsTask(gateway).then(runInformationTask(gateway));
   }
 }

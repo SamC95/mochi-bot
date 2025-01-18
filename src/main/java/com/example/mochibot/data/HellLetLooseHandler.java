@@ -26,7 +26,7 @@ public class HellLetLooseHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update newsHandler() throws IOException, ExecutionException, InterruptedException {
     Update newsPost = retrievePostDetails.getHellLetLooseNews();
 
     Firestore datastore = FirestoreClient.getFirestore();
@@ -36,24 +36,24 @@ public class HellLetLooseHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Hell Let Loose");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           HellLetLooseHandler hellLetLooseHandler = new HellLetLooseHandler();
           try {
             Update newsPost = hellLetLooseHandler.newsHandler();
             if (newsPost != null) {
-              getHellLetLooseUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Hell Let Loose update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Hell Let Loose update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  private void getHellLetLooseUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("HLL_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 

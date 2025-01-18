@@ -26,7 +26,7 @@ public class TheOldRepublicHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getTheOldRepublicNews();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,14 +36,14 @@ public class TheOldRepublicHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Star Wars The Old Republic");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           TheOldRepublicHandler theOldRepublicHandler = new TheOldRepublicHandler();
           try {
             Update newsPost = theOldRepublicHandler.newsHandler();
             if (newsPost != null) {
-              getTheOldRepublicUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
               System.err.printf(
@@ -53,7 +53,7 @@ public class TheOldRepublicHandler implements GameHandler {
         });
   }
 
-  private void getTheOldRepublicUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("SWTOR_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 

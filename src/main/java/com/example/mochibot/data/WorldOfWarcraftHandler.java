@@ -26,7 +26,7 @@ public class WorldOfWarcraftHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getWorldOfWarcraftNews();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,14 +36,14 @@ public class WorldOfWarcraftHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "World of Warcraft");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           WorldOfWarcraftHandler worldOfWarcraftHandler = new WorldOfWarcraftHandler();
           try {
             Update newsPost = worldOfWarcraftHandler.newsHandler();
             if (newsPost != null) {
-              getWorldOfWarcraftUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
@@ -53,7 +53,7 @@ public class WorldOfWarcraftHandler implements GameHandler {
         });
   }
 
-  private void getWorldOfWarcraftUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("WOW_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 

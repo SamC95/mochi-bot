@@ -26,7 +26,7 @@ public class OSRSHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getOldSchoolRuneScapeNews();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,14 +36,14 @@ public class OSRSHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Old School RuneScape");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           OSRSHandler osrsHandler = new OSRSHandler();
           try {
             Update newsPost = osrsHandler.newsHandler();
             if (newsPost != null) {
-              getOSRSUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
               System.err.printf(
@@ -53,7 +53,7 @@ public class OSRSHandler implements GameHandler {
         });
   }
 
-  private void getOSRSUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("OSRS_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 

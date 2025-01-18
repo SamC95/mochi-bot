@@ -22,11 +22,11 @@ import java.util.concurrent.ExecutionException;
 
 import static com.example.mochibot.utils.firestore.UpdateHandler.getUpdate;
 
-public class FFXIVHandler implements GameHandler  {
+public class FFXIVHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update FFXIVTopicsHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
     Update topicsPost = retrievePostDetails.getFinalFantasyXIVTopics();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,7 +36,7 @@ public class FFXIVHandler implements GameHandler  {
     return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV topics");
   }
 
-  public Update FFXIVNewsHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update newsHandler() throws IOException, ExecutionException, InterruptedException {
     Update newsPost = retrievePostDetails.getFinalFantasyXIVNews();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -46,53 +46,53 @@ public class FFXIVHandler implements GameHandler  {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV news");
   }
 
-  public Mono<Void> runFFXIVTopicsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           FFXIVHandler xivHandler = new FFXIVHandler();
           try {
-            Update topicsPost = xivHandler.FFXIVTopicsHandler();
+            Update topicsPost = xivHandler.topicsHandler();
             if (topicsPost != null) {
-              getFFXIVUpdate(gateway, topicsPost);
+              postUpdate(gateway, topicsPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone topics update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone topics update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  public Mono<Void> runFFXIVNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           FFXIVHandler xivHandler = new FFXIVHandler();
           try {
-            Update newsPost = xivHandler.FFXIVNewsHandler();
+            Update newsPost = xivHandler.newsHandler();
             if (newsPost != null) {
-              getFFXIVUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone news update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone news update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  private void getFFXIVUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("FFXIV_CHANNEL_ID");
-      String formattedDate = DateFormatter.getFormattedDate();
+    String formattedDate = DateFormatter.getFormattedDate();
 
-      gateway
+    gateway
         .getChannelById(Snowflake.of(channelId))
         .ofType(TextChannel.class)
         .flatMap(
             channel -> {
-                String image =
-                        post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
-                                ? post.getImage()
-                                : "";
+              String image =
+                  post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
+                      ? post.getImage()
+                      : "";
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
@@ -109,8 +109,8 @@ public class FFXIVHandler implements GameHandler  {
         .subscribe();
   }
 
-    @Override
-    public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-        return runFFXIVTopicsTask(gateway).then(runFFXIVNewsTask(gateway));
-    }
+  @Override
+  public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
+    return runTopicsTask(gateway).then(runNewsTask(gateway));
+  }
 }

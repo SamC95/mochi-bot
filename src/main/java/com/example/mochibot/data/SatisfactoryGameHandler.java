@@ -26,7 +26,7 @@ public class SatisfactoryGameHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getSatisfactoryGameNews();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,14 +36,14 @@ public class SatisfactoryGameHandler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "SatisfactoryGame");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           SatisfactoryGameHandler satisfactoryGameHandler = new SatisfactoryGameHandler();
           try {
             Update newsPost = satisfactoryGameHandler.newsHandler();
             if (newsPost != null) {
-              getSatisfactoryUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
               System.err.printf(
@@ -53,7 +53,7 @@ public class SatisfactoryGameHandler implements GameHandler {
         });
   }
 
-  private void getSatisfactoryUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("SATISFACTORY_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
