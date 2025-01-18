@@ -26,7 +26,7 @@ public class PathOfExile2Handler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
 
-  public Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getPathOfExile2News();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -36,7 +36,7 @@ public class PathOfExile2Handler implements GameHandler {
     return getUpdate(newsPost, docRef, firestoreDocUpdater, "Path of Exile 2 Steam hub");
   }
 
-  public Update hotfixHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update hotfixHandler() throws IOException, ExecutionException, InterruptedException {
     Update patchPost = retrievePostDetails.getPathOfExile2Hotfix();
 
     Firestore database = FirestoreClient.getFirestore();
@@ -46,14 +46,18 @@ public class PathOfExile2Handler implements GameHandler {
     return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2 hotfixes");
   }
 
-  public Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
           try {
             Update newsPost = poe2Handler.newsHandler();
             if (newsPost != null) {
-              getPathOfExile2Update(gateway, newsPost);
+              postUpdate(
+                  gateway,
+                  newsPost,
+                  "https://store.steampowered.com/news/app/2694490",
+                  "Steam News");
             }
           } catch (Exception e) {
             System.err.printf(
@@ -63,15 +67,19 @@ public class PathOfExile2Handler implements GameHandler {
         });
   }
 
-  // Disabled functionality
-  public Mono<Void> runHotfixTask(GatewayDiscordClient gateway) {
+  // Currently unused functionality
+  private Mono<Void> runHotfixTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
           try {
             Update patchPost = poe2Handler.hotfixHandler();
             if (patchPost != null) {
-              getPathOfExile2Hotfix(gateway, patchPost);
+              postUpdate(
+                  gateway,
+                  patchPost,
+                  "https://www.pathofexile.com/forum/view-forum/2212",
+                  patchPost.getAuthor());
             }
           } catch (Exception e) {
             System.err.printf(
@@ -81,40 +89,8 @@ public class PathOfExile2Handler implements GameHandler {
         });
   }
 
-  private void getPathOfExile2Update(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("POE2_CHANNEL_ID");
-    String formattedDate = DateFormatter.getFormattedDate();
-
-    gateway
-        .getChannelById(Snowflake.of(channelId))
-        .ofType(TextChannel.class)
-        .flatMap(
-            channel -> {
-              String image =
-                  post.getImage() != null && !Objects.equals(post.getImage(), "No image found")
-                      ? post.getImage()
-                      : "";
-
-              EmbedCreateSpec embed =
-                  EmbedCreateSpec.builder()
-                      .author(
-                          "Path of Exile 2, Steam News Hub",
-                          "https://store.steampowered.com/news/app/2694490",
-                          "")
-                      .title(post.getTitle())
-                      .url(post.getUrl())
-                      .image(image)
-                      .description(post.getDescription())
-                      .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/poe2-logo.png?raw=true")
-                      .footer("News provided by MochiBot • " + formattedDate, "")
-                      .build();
-              return channel.createMessage(embed);
-            })
-        .subscribe();
-  }
-
-  private void getPathOfExile2Hotfix(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(
+      GatewayDiscordClient gateway, Update post, String authorUrl, String category) {
     var channelId = PropertiesLoader.loadProperties("POE2_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
@@ -136,10 +112,7 @@ public class PathOfExile2Handler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author(
-                          "Path of Exile 2, " + post.getAuthor(),
-                          "https://www.pathofexile.com/forum/view-forum/2212",
-                          "")
+                      .author("Path of Exile 2: " + category, authorUrl, "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
