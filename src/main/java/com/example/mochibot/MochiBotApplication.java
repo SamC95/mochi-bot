@@ -1,6 +1,6 @@
 package com.example.mochibot;
 
-import com.example.mochibot.utils.firestore.FirestoreBuilder;
+import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
 import com.example.mochibot.utils.loaders.PropertiesLoader;
 
 import java.io.IOException;
@@ -30,8 +30,7 @@ public class MochiBotApplication {
     Thread mochiThread = new Thread(mochi::start);
     mochiThread.start();
 
-    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-     System.out.printf("[%s] [SYSTEM] Stopping MochiBot...", LocalTime.now());
-    }));
+    Runtime.getRuntime().addShutdownHook(new Thread(() ->
+            System.out.printf("[%s] [SYSTEM] Stopping MochiBot...", LocalTime.now())));
   }
 }

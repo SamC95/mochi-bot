@@ -1,6 +1,6 @@
 package com.example.mochibot.data;
 
-import com.example.mochibot.utils.firestore.FirestoreDocUpdater;
+import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.example.mochibot.utils.posts.DateFormatter;
 import com.example.mochibot.utils.posts.GameHandler;
 import com.example.mochibot.utils.loaders.PropertiesLoader;
@@ -20,7 +20,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.mochibot.utils.firestore.UpdateHandler.getUpdate;
+import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class HellLetLooseHandler implements GameHandler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
