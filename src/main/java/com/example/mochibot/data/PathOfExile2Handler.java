@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class PathOfExile2Handler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public PathOfExile2Handler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getPathOfExile2News();
@@ -49,7 +55,8 @@ public class PathOfExile2Handler implements GameHandler {
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
+          PathOfExile2Handler poe2Handler =
+              new PathOfExile2Handler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update newsPost = poe2Handler.newsHandler();
             if (newsPost != null) {
@@ -71,7 +78,8 @@ public class PathOfExile2Handler implements GameHandler {
   private Mono<Void> runHotfixTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          PathOfExile2Handler poe2Handler = new PathOfExile2Handler();
+          PathOfExile2Handler poe2Handler =
+              new PathOfExile2Handler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update patchPost = poe2Handler.hotfixHandler();
             if (patchPost != null) {

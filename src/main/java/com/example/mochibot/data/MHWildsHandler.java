@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class MHWildsHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public MHWildsHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
@@ -39,7 +45,8 @@ public class MHWildsHandler implements GameHandler {
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          MHWildsHandler mhWildshandler = new MHWildsHandler();
+          MHWildsHandler mhWildshandler =
+              new MHWildsHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update newsPost = mhWildshandler.newsHandler();
             if (newsPost != null) {

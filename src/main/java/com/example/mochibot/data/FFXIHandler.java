@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class FFXIHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public FFXIHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   // Topics news feed
   private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
@@ -51,7 +57,7 @@ public class FFXIHandler implements GameHandler {
   private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIHandler xiHandler = new FFXIHandler();
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update topicsPost = xiHandler.topicsHandler();
             if (topicsPost != null) {
@@ -68,7 +74,7 @@ public class FFXIHandler implements GameHandler {
   private Mono<Void> runInformationTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIHandler xiHandler = new FFXIHandler();
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update informationPost = xiHandler.informationHandler();
             if (informationPost != null) {

@@ -23,17 +23,23 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class WarThunderHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public WarThunderHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update pinnedNewsHandler() throws ExecutionException, InterruptedException, IOException {
-      Update newsPost = retrievePostDetails.getWarThunderPinnedNews();
+    Update newsPost = retrievePostDetails.getWarThunderPinnedNews();
 
-      Firestore database = FirestoreClient.getFirestore();
+    Firestore database = FirestoreClient.getFirestore();
 
-      DocumentReference docRef = database.collection("games").document("114");
+    DocumentReference docRef = database.collection("games").document("114");
 
-      return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder (pinned)");
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder (pinned)");
   }
 
   private Update unpinnedNewsHandler()
@@ -48,27 +54,29 @@ public class WarThunderHandler implements GameHandler {
   }
 
   private Mono<Void> runPinnedNewsTask(GatewayDiscordClient gateway) {
-      return Mono.fromRunnable(
-              () -> {
-                  WarThunderHandler warThunderHandler = new WarThunderHandler();
+    return Mono.fromRunnable(
+        () -> {
+          WarThunderHandler warThunderHandler =
+              new WarThunderHandler(retrievePostDetails, firestoreDocUpdater);
 
-                  try {
-                      Update newsPost = warThunderHandler.pinnedNewsHandler();
-                      if (newsPost != null) {
-                          postUpdate(gateway, newsPost);
-                      }
-                  } catch (Exception e) {
-                      System.err.printf(
-                              "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
-                              LocalTime.now(), e.getMessage());
-                  }
-              });
+          try {
+            Update newsPost = warThunderHandler.pinnedNewsHandler();
+            if (newsPost != null) {
+              postUpdate(gateway, newsPost);
+            }
+          } catch (Exception e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                LocalTime.now(), e.getMessage());
+          }
+        });
   }
 
   private Mono<Void> runUnpinnedNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          WarThunderHandler warThunderHandler = new WarThunderHandler();
+          WarThunderHandler warThunderHandler =
+              new WarThunderHandler(retrievePostDetails, firestoreDocUpdater);
 
           try {
             Update newsPost = warThunderHandler.unpinnedNewsHandler();
@@ -76,9 +84,9 @@ public class WarThunderHandler implements GameHandler {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
-              System.err.printf(
-                      "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
-                      LocalTime.now(), e.getMessage());
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                LocalTime.now(), e.getMessage());
           }
         });
   }

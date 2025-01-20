@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class HellLetLooseHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public HellLetLooseHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update newsHandler() throws IOException, ExecutionException, InterruptedException {
     Update newsPost = retrievePostDetails.getHellLetLooseNews();
@@ -39,7 +45,8 @@ public class HellLetLooseHandler implements GameHandler {
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          HellLetLooseHandler hellLetLooseHandler = new HellLetLooseHandler();
+          HellLetLooseHandler hellLetLooseHandler =
+              new HellLetLooseHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update newsPost = hellLetLooseHandler.newsHandler();
             if (newsPost != null) {

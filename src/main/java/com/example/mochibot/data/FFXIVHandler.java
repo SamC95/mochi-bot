@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class FFXIVHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public FFXIVHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
     Update topicsPost = retrievePostDetails.getFinalFantasyXIVTopics();
@@ -49,7 +55,7 @@ public class FFXIVHandler implements GameHandler {
   private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIVHandler xivHandler = new FFXIVHandler();
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update topicsPost = xivHandler.topicsHandler();
             if (topicsPost != null) {
@@ -66,7 +72,7 @@ public class FFXIVHandler implements GameHandler {
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIVHandler xivHandler = new FFXIVHandler();
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update newsPost = xivHandler.newsHandler();
             if (newsPost != null) {

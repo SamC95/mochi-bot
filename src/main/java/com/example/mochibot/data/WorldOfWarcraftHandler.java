@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class WorldOfWarcraftHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public WorldOfWarcraftHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
     Update newsPost = retrievePostDetails.getWorldOfWarcraftNews();
@@ -39,7 +45,8 @@ public class WorldOfWarcraftHandler implements GameHandler {
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          WorldOfWarcraftHandler worldOfWarcraftHandler = new WorldOfWarcraftHandler();
+          WorldOfWarcraftHandler worldOfWarcraftHandler =
+              new WorldOfWarcraftHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update newsPost = worldOfWarcraftHandler.newsHandler();
             if (newsPost != null) {

@@ -23,8 +23,14 @@ import java.util.concurrent.ExecutionException;
 import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class MarvelRivalsHandler implements GameHandler {
-  RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  private final RetrievePostDetails retrievePostDetails;
+  private final FirestoreDocUpdater firestoreDocUpdater;
+
+  public MarvelRivalsHandler(
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+    this.retrievePostDetails = retrievePostDetails;
+    this.firestoreDocUpdater = firestoreDocUpdater;
+  }
 
   private Update announcementHandler()
       throws ExecutionException, InterruptedException, IOException {
@@ -54,7 +60,8 @@ public class MarvelRivalsHandler implements GameHandler {
   private Mono<Void> runAnnouncementTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          MarvelRivalsHandler marvelRivalsHandler = new MarvelRivalsHandler();
+          MarvelRivalsHandler marvelRivalsHandler =
+              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update announcementPost = marvelRivalsHandler.announcementHandler();
             if (announcementPost != null) {
@@ -72,7 +79,8 @@ public class MarvelRivalsHandler implements GameHandler {
   private Mono<Void> runDevDiaryTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          MarvelRivalsHandler marvelRivalsHandler = new MarvelRivalsHandler();
+          MarvelRivalsHandler marvelRivalsHandler =
+              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update devDiaryPost = marvelRivalsHandler.devDiaryHandler();
             if (devDiaryPost != null) {
@@ -90,7 +98,8 @@ public class MarvelRivalsHandler implements GameHandler {
   private Mono<Void> runUpdateTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          MarvelRivalsHandler marvelRivalsHandler = new MarvelRivalsHandler();
+          MarvelRivalsHandler marvelRivalsHandler =
+              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater);
           try {
             Update updatePost = marvelRivalsHandler.updateHandler();
             if (updatePost != null) {
