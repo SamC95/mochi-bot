@@ -11,6 +11,7 @@ import com.example.mochibot.data.SatisfactoryGameHandler;
 import com.example.mochibot.data.TheOldRepublicHandler;
 import com.example.mochibot.data.WarThunderHandler;
 import com.example.mochibot.data.WorldOfWarcraftHandler;
+import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
 import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
@@ -24,11 +25,12 @@ import java.util.concurrent.TimeUnit;
 public class PostScheduler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
   FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
+  FirestoreBuilder firestoreBuilder = new FirestoreBuilder();
 
   private final Map<GameHandler, Map<String, Long>> handlerScheduleMap =
       Map.ofEntries(
           Map.entry(
-              new FFXIHandler(retrievePostDetails, firestoreDocUpdater),
+              new FFXIHandler(retrievePostDetails, firestoreDocUpdater, firestoreBuilder),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new FFXIVHandler(retrievePostDetails, firestoreDocUpdater),

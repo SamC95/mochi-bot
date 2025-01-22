@@ -1,5 +1,6 @@
 package com.example.mochibot.data;
 
+import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
 import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.example.mochibot.utils.posts.DateFormatter;
 import com.example.mochibot.utils.posts.GameHandler;
@@ -8,7 +9,6 @@ import com.example.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -25,18 +25,20 @@ import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
 public class FFXIHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final FirestoreDocUpdater firestoreDocUpdater;
+  private final FirestoreBuilder firestoreBuilder;
 
   public FFXIHandler(
-      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater, FirestoreBuilder firestoreBuilder) {
     this.retrievePostDetails = retrievePostDetails;
     this.firestoreDocUpdater = firestoreDocUpdater;
+    this.firestoreBuilder = firestoreBuilder;
   }
 
   // Topics news feed
   private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
     Update topicsPost = retrievePostDetails.getFinalFantasyXITopics();
 
-    Firestore database = FirestoreClient.getFirestore();
+    Firestore database = firestoreBuilder.getFirestore();
 
     DocumentReference docRef = database.collection("games").document("102");
 
@@ -47,7 +49,7 @@ public class FFXIHandler implements GameHandler {
   private Update informationHandler() throws IOException, ExecutionException, InterruptedException {
     Update informationPost = retrievePostDetails.getFinalFantasyXIInformation();
 
-    Firestore database = FirestoreClient.getFirestore();
+    Firestore database = firestoreBuilder.getFirestore();
 
     DocumentReference docRef = database.collection("games").document("103");
 
@@ -57,11 +59,11 @@ public class FFXIHandler implements GameHandler {
   private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, firestoreDocUpdater);
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, firestoreDocUpdater, firestoreBuilder);
           try {
             Update topicsPost = xiHandler.topicsHandler();
             if (topicsPost != null) {
-              getFFXIUpdate(gateway, topicsPost);
+              postUpdate(gateway, topicsPost);
             }
           } catch (IOException | ExecutionException | InterruptedException e) {
             System.err.printf(
@@ -74,11 +76,11 @@ public class FFXIHandler implements GameHandler {
   private Mono<Void> runInformationTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, firestoreDocUpdater);
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, firestoreDocUpdater, firestoreBuilder);
           try {
             Update informationPost = xiHandler.informationHandler();
             if (informationPost != null) {
-              getFFXIUpdate(gateway, informationPost);
+              postUpdate(gateway, informationPost);
             }
           } catch (IOException | ExecutionException | InterruptedException e) {
             System.err.printf(
@@ -88,7 +90,7 @@ public class FFXIHandler implements GameHandler {
         });
   }
 
-  private void getFFXIUpdate(GatewayDiscordClient gateway, Update post) {
+  private void postUpdate(GatewayDiscordClient gateway, Update post) {
     var channelId = PropertiesLoader.loadProperties("FFXI_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
