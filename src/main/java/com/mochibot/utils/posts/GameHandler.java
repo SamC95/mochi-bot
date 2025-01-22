@@ -1,4 +1,4 @@
-package com.example.mochibot.utils.posts;
+package com.mochibot.utils.posts;
 
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.publisher.Mono;

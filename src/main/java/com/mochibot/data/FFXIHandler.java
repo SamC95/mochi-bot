@@ -1,11 +1,11 @@
-package com.example.mochibot.data;
+package com.mochibot.data;
 
-import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
-import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
-import com.example.mochibot.utils.posts.DateFormatter;
-import com.example.mochibot.utils.posts.GameHandler;
-import com.example.mochibot.utils.loaders.PropertiesLoader;
-import com.example.mochibot.utils.posts.RetrievePostDetails;
+import com.mochibot.utils.repository.firestore.FirestoreBuilder;
+import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.utils.posts.DateFormatter;
+import com.mochibot.utils.posts.GameHandler;
+import com.mochibot.utils.loaders.PropertiesLoader;
+import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -20,7 +20,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
+import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class FFXIHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;

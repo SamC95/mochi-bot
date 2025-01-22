@@ -1,10 +1,10 @@
-package com.example.mochibot.data;
+package com.mochibot.data;
 
-import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
-import com.example.mochibot.utils.posts.DateFormatter;
-import com.example.mochibot.utils.posts.GameHandler;
-import com.example.mochibot.utils.loaders.PropertiesLoader;
-import com.example.mochibot.utils.posts.RetrievePostDetails;
+import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.utils.posts.DateFormatter;
+import com.mochibot.utils.posts.GameHandler;
+import com.mochibot.utils.loaders.PropertiesLoader;
+import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -20,48 +20,48 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
+import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
-public class MHWildsHandler implements GameHandler {
+public class TheOldRepublicHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final FirestoreDocUpdater firestoreDocUpdater;
 
-  public MHWildsHandler(
+  public TheOldRepublicHandler(
       RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
     this.retrievePostDetails = retrievePostDetails;
     this.firestoreDocUpdater = firestoreDocUpdater;
   }
 
   private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
-    Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
+    Update newsPost = retrievePostDetails.getTheOldRepublicNews();
 
     Firestore database = FirestoreClient.getFirestore();
 
-    DocumentReference docRef = database.collection("games").document("105");
+    DocumentReference docRef = database.collection("games").document("108");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Monster Hunter Wilds");
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Star Wars The Old Republic");
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          MHWildsHandler mhWildshandler =
-              new MHWildsHandler(retrievePostDetails, firestoreDocUpdater);
+          TheOldRepublicHandler theOldRepublicHandler =
+              new TheOldRepublicHandler(retrievePostDetails, firestoreDocUpdater);
           try {
-            Update newsPost = mhWildshandler.newsHandler();
+            Update newsPost = theOldRepublicHandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Monster Hunter: Wilds steam news update: %s\n",
+                "[%s] [ERROR] Failed to fetch Star Wars: The Old Republic update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("MHWILDS_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("SWTOR_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -76,16 +76,13 @@ public class MHWildsHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author(
-                          "Monster Hunter Wilds, Steam News Hub",
-                          "https://store.steampowered.com/news/app/2246340",
-                          "")
+                      .author("Star Wars: The Old Republic", "https://www.swtor.com/info/news", "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
                       .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/mhwilds-logo.png?raw=true")
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/swtorlogo.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);

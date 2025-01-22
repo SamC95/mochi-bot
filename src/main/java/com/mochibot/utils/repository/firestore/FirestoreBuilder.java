@@ -1,4 +1,4 @@
-package com.example.mochibot.utils.repository.firestore;
+package com.mochibot.utils.repository.firestore;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.Firestore;

@@ -1,6 +1,5 @@
-package com.example.mochibot.utils.posts;
+package com.mochibot.utils.posts;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

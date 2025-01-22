@@ -1,18 +1,18 @@
-package com.example.mochibot.utils.posts;
+package com.mochibot.utils.posts;
 
-import com.example.mochibot.data.FFXIHandler;
-import com.example.mochibot.data.FFXIVHandler;
-import com.example.mochibot.data.HellLetLooseHandler;
-import com.example.mochibot.data.MHWildsHandler;
-import com.example.mochibot.data.MarvelRivalsHandler;
-import com.example.mochibot.data.OSRSHandler;
-import com.example.mochibot.data.PathOfExile2Handler;
-import com.example.mochibot.data.SatisfactoryGameHandler;
-import com.example.mochibot.data.TheOldRepublicHandler;
-import com.example.mochibot.data.WarThunderHandler;
-import com.example.mochibot.data.WorldOfWarcraftHandler;
-import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
-import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.data.FFXIHandler;
+import com.mochibot.data.FFXIVHandler;
+import com.mochibot.data.HellLetLooseHandler;
+import com.mochibot.data.MHWildsHandler;
+import com.mochibot.data.MarvelRivalsHandler;
+import com.mochibot.data.OSRSHandler;
+import com.mochibot.data.PathOfExile2Handler;
+import com.mochibot.data.SatisfactoryGameHandler;
+import com.mochibot.data.TheOldRepublicHandler;
+import com.mochibot.data.WarThunderHandler;
+import com.mochibot.data.WorldOfWarcraftHandler;
+import com.mochibot.utils.repository.firestore.FirestoreBuilder;
+import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
 

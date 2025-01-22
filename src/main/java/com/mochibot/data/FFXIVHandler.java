@@ -1,10 +1,10 @@
-package com.example.mochibot.data;
+package com.mochibot.data;
 
-import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
-import com.example.mochibot.utils.posts.DateFormatter;
-import com.example.mochibot.utils.posts.GameHandler;
-import com.example.mochibot.utils.loaders.PropertiesLoader;
-import com.example.mochibot.utils.posts.RetrievePostDetails;
+import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.utils.posts.DateFormatter;
+import com.mochibot.utils.posts.GameHandler;
+import com.mochibot.utils.loaders.PropertiesLoader;
+import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
@@ -20,79 +20,74 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-import static com.example.mochibot.utils.repository.UpdateHandler.getUpdate;
+import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
-public class WarThunderHandler implements GameHandler {
+public class FFXIVHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final FirestoreDocUpdater firestoreDocUpdater;
 
-  public WarThunderHandler(
+  public FFXIVHandler(
       RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
     this.retrievePostDetails = retrievePostDetails;
     this.firestoreDocUpdater = firestoreDocUpdater;
   }
 
-  private Update pinnedNewsHandler() throws ExecutionException, InterruptedException, IOException {
-    Update newsPost = retrievePostDetails.getWarThunderPinnedNews();
+  private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
+    Update topicsPost = retrievePostDetails.getFinalFantasyXIVTopics();
 
     Firestore database = FirestoreClient.getFirestore();
 
-    DocumentReference docRef = database.collection("games").document("114");
+    DocumentReference docRef = database.collection("games").document("100");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder (pinned)");
+    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV topics");
   }
 
-  private Update unpinnedNewsHandler()
-      throws IOException, ExecutionException, InterruptedException {
-    Update newsPost = retrievePostDetails.getWarThunderUnpinnedNews();
+  private Update newsHandler() throws IOException, ExecutionException, InterruptedException {
+    Update newsPost = retrievePostDetails.getFinalFantasyXIVNews();
 
     Firestore database = FirestoreClient.getFirestore();
 
-    DocumentReference docRef = database.collection("games").document("109");
+    DocumentReference docRef = database.collection("games").document("101");
 
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "War Thunder (unpinned)");
+    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV news");
   }
 
-  private Mono<Void> runPinnedNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          WarThunderHandler warThunderHandler =
-              new WarThunderHandler(retrievePostDetails, firestoreDocUpdater);
-
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, firestoreDocUpdater);
           try {
-            Update newsPost = warThunderHandler.pinnedNewsHandler();
-            if (newsPost != null) {
-              postUpdate(gateway, newsPost);
+            Update topicsPost = xivHandler.topicsHandler();
+            if (topicsPost != null) {
+              postUpdate(gateway, topicsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone topics update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  private Mono<Void> runUnpinnedNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          WarThunderHandler warThunderHandler =
-              new WarThunderHandler(retrievePostDetails, firestoreDocUpdater);
-
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, firestoreDocUpdater);
           try {
-            Update newsPost = warThunderHandler.unpinnedNewsHandler();
+            Update newsPost = xivHandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone news update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("WAR_THUNDER_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("FFXIV_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -107,13 +102,12 @@ public class WarThunderHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author("War Thunder", "https://warthunder.com/en/news", "")
+                      .author(post.getAuthor(), "https://eu.finalfantasyxiv.com/lodestone/", "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
-                      .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/war-thunder-logo.png?raw=true")
+                      .thumbnail("https://lodestonenews.com/images/thumbnail.png")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
@@ -123,6 +117,6 @@ public class WarThunderHandler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runUnpinnedNewsTask(gateway).then(runPinnedNewsTask(gateway));
+    return runTopicsTask(gateway).then(runNewsTask(gateway));
   }
 }

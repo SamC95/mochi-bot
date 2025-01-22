@@ -1,6 +1,6 @@
-package com.example.mochibot.utils.loaders;
+package com.mochibot.utils.loaders;
 
-import com.example.mochibot.MochiBotApplication;
+import com.mochibot.MochiBotApplication;
 
 import java.io.IOException;
 import java.io.InputStream;

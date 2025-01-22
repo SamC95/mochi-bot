@@ -1,9 +1,9 @@
-package HandlerTests;
+package handlers;
 
-import com.example.mochibot.data.FFXIHandler;
-import com.example.mochibot.utils.posts.RetrievePostDetails;
-import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
-import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.data.FFXIHandler;
+import com.mochibot.utils.posts.RetrievePostDetails;
+import com.mochibot.utils.repository.firestore.FirestoreBuilder;
+import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.example.scraper.model.Update;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;

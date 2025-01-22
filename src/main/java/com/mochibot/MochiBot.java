@@ -1,6 +1,6 @@
-package com.example.mochibot;
+package com.mochibot;
 
-import com.example.mochibot.utils.posts.PostScheduler;
+import com.mochibot.utils.posts.PostScheduler;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;

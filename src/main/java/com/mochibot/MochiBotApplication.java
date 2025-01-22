@@ -1,7 +1,7 @@
-package com.example.mochibot;
+package com.mochibot;
 
-import com.example.mochibot.utils.repository.firestore.FirestoreBuilder;
-import com.example.mochibot.utils.loaders.PropertiesLoader;
+import com.mochibot.utils.repository.firestore.FirestoreBuilder;
+import com.mochibot.utils.loaders.PropertiesLoader;
 
 import java.io.IOException;
 import java.time.LocalTime;

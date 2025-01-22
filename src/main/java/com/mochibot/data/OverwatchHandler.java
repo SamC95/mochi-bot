@@ -1,4 +1,4 @@
-package com.example.mochibot.data;
+package com.mochibot.data;
 
 public class OverwatchHandler {
     // TODO

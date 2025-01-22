@@ -1,6 +1,6 @@
-package com.example.mochibot.utils.repository;
+package com.mochibot.utils.repository;
 
-import com.example.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;

@@ -1,4 +1,4 @@
-package com.example.mochibot.utils.posts;
+package com.mochibot.utils.posts;
 
 import com.example.scraper.data.FinalFantasyXI;
 import com.example.scraper.data.FinalFantasyXIV;
