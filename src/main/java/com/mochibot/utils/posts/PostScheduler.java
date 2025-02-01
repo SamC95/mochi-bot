@@ -11,8 +11,8 @@ import com.mochibot.data.SatisfactoryGameHandler;
 import com.mochibot.data.TheOldRepublicHandler;
 import com.mochibot.data.WarThunderHandler;
 import com.mochibot.data.WorldOfWarcraftHandler;
-import com.mochibot.utils.repository.firestore.FirestoreBuilder;
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+import com.mochibot.utils.repository.mysql.DatabaseBuilder;
+import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
 
@@ -24,43 +24,43 @@ import java.util.concurrent.TimeUnit;
 
 public class PostScheduler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  FirestoreDocUpdater firestoreDocUpdater = new FirestoreDocUpdater();
-  FirestoreBuilder firestoreBuilder = new FirestoreBuilder();
+  DatabaseBuilder databaseBuilder = new DatabaseBuilder();
+  DatabaseHandler databaseHandler = new DatabaseHandler();
 
   private final Map<GameHandler, Map<String, Long>> handlerScheduleMap =
       Map.ofEntries(
           Map.entry(
-              new FFXIHandler(retrievePostDetails, firestoreDocUpdater, firestoreBuilder),
+              new FFXIHandler(retrievePostDetails, databaseBuilder, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new FFXIVHandler(retrievePostDetails, firestoreDocUpdater),
+              new FFXIVHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new WarThunderHandler(retrievePostDetails, firestoreDocUpdater),
+              new WarThunderHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new WorldOfWarcraftHandler(retrievePostDetails, firestoreDocUpdater),
+              new WorldOfWarcraftHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new HellLetLooseHandler(retrievePostDetails, firestoreDocUpdater),
+              new HellLetLooseHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new TheOldRepublicHandler(retrievePostDetails, firestoreDocUpdater),
+              new TheOldRepublicHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new MHWildsHandler(retrievePostDetails, firestoreDocUpdater),
+              new MHWildsHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new SatisfactoryGameHandler(retrievePostDetails, firestoreDocUpdater),
+              new SatisfactoryGameHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new PathOfExile2Handler(retrievePostDetails, firestoreDocUpdater),
+              new PathOfExile2Handler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new OSRSHandler(retrievePostDetails, firestoreDocUpdater),
+              new OSRSHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater),
+              new MarvelRivalsHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)));
 
   public void schedulePeriodicPosts(GatewayDiscordClient gateway) {

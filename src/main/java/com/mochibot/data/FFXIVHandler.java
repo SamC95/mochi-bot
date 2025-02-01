@@ -1,14 +1,12 @@
 package com.mochibot.data;
 
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
+
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
+import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -16,46 +14,36 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
-import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class FFXIVHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
-  private final FirestoreDocUpdater firestoreDocUpdater;
+  private final DatabaseHandler databaseHandler;
 
   public FFXIVHandler(
-      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
-    this.firestoreDocUpdater = firestoreDocUpdater;
+    this.databaseHandler = databaseHandler;
   }
 
-  private Update topicsHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update topicsHandler() throws IOException, SQLException {
     Update topicsPost = retrievePostDetails.getFinalFantasyXIVTopics();
 
-    Firestore database = FirestoreClient.getFirestore();
-
-    DocumentReference docRef = database.collection("games").document("100");
-
-    return getUpdate(topicsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV topics");
+    return databaseHandler.getUpdate(topicsPost, "Final Fantasy XIV topics", 100);
   }
 
-  private Update newsHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update newsHandler() throws IOException, SQLException {
     Update newsPost = retrievePostDetails.getFinalFantasyXIVNews();
 
-    Firestore database = FirestoreClient.getFirestore();
-
-    DocumentReference docRef = database.collection("games").document("101");
-
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Final Fantasy XIV news");
+    return databaseHandler.getUpdate(newsPost, "Final Fantasy XIV news", 101);
   }
 
   private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, firestoreDocUpdater);
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, databaseHandler);
           try {
             Update topicsPost = xivHandler.topicsHandler();
             if (topicsPost != null) {
@@ -72,7 +60,7 @@ public class FFXIVHandler implements GameHandler {
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, firestoreDocUpdater);
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, databaseHandler);
           try {
             Update newsPost = xivHandler.newsHandler();
             if (newsPost != null) {

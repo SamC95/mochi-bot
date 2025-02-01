@@ -1,14 +1,11 @@
 package com.mochibot.data;
 
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
+import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -16,52 +13,44 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
-import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class MarvelRivalsHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
-  private final FirestoreDocUpdater firestoreDocUpdater;
+  private final DatabaseHandler databaseHandler;
 
   public MarvelRivalsHandler(
-      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
-    this.firestoreDocUpdater = firestoreDocUpdater;
+    this.databaseHandler = databaseHandler;
   }
 
-  private Update announcementHandler()
-      throws ExecutionException, InterruptedException, IOException {
+  private Update announcementHandler() throws SQLException, IOException {
     Update announcementPost = retrievePostDetails.getMarvelRivalsAnnouncements();
-    Firestore database = FirestoreClient.getFirestore();
-    DocumentReference docRef = database.collection("games").document("115");
 
-    return getUpdate(announcementPost, docRef, firestoreDocUpdater, "Marvel Rivals announcements");
+    return databaseHandler.getUpdate(announcementPost, "Marvel Rivals announcements", 115);
   }
 
-  private Update devDiaryHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update devDiaryHandler() throws SQLException, IOException {
     Update devDiaryPost = retrievePostDetails.getMarvelRivalsDevDiaries();
-    Firestore database = FirestoreClient.getFirestore();
-    DocumentReference docRef = database.collection("games").document("116");
 
-    return getUpdate(devDiaryPost, docRef, firestoreDocUpdater, "Marvel Rivals dev diaries");
+    return databaseHandler.getUpdate(devDiaryPost, "Marvel Rivals dev diaries", 116);
   }
 
-  private Update updateHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update updateHandler() throws SQLException, IOException {
     Update updatePost = retrievePostDetails.getMarvelRivalsUpdates();
-    Firestore database = FirestoreClient.getFirestore();
-    DocumentReference docRef = database.collection("games").document("117");
 
-    return getUpdate(updatePost, docRef, firestoreDocUpdater, "Marvel Rivals updates");
+    return databaseHandler.getUpdate(updatePost, "Marvel Rivals updates", 117);
   }
 
   private Mono<Void> runAnnouncementTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           MarvelRivalsHandler marvelRivalsHandler =
-              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater);
+              new MarvelRivalsHandler(retrievePostDetails, databaseHandler);
           try {
             Update announcementPost = marvelRivalsHandler.announcementHandler();
             if (announcementPost != null) {
@@ -80,7 +69,7 @@ public class MarvelRivalsHandler implements GameHandler {
     return Mono.fromRunnable(
         () -> {
           MarvelRivalsHandler marvelRivalsHandler =
-              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater);
+              new MarvelRivalsHandler(retrievePostDetails, databaseHandler);
           try {
             Update devDiaryPost = marvelRivalsHandler.devDiaryHandler();
             if (devDiaryPost != null) {
@@ -99,7 +88,7 @@ public class MarvelRivalsHandler implements GameHandler {
     return Mono.fromRunnable(
         () -> {
           MarvelRivalsHandler marvelRivalsHandler =
-              new MarvelRivalsHandler(retrievePostDetails, firestoreDocUpdater);
+              new MarvelRivalsHandler(retrievePostDetails, databaseHandler);
           try {
             Update updatePost = marvelRivalsHandler.updateHandler();
             if (updatePost != null) {

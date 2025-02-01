@@ -1,14 +1,11 @@
 package com.mochibot.data;
 
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
+import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -16,47 +13,37 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
-import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class PathOfExile2Handler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
-  private final FirestoreDocUpdater firestoreDocUpdater;
+  private final DatabaseHandler databaseHandler;
 
   public PathOfExile2Handler(
-      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
-    this.firestoreDocUpdater = firestoreDocUpdater;
+    this.databaseHandler = databaseHandler;
   }
 
-  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws SQLException, IOException {
     Update newsPost = retrievePostDetails.getPathOfExile2News();
 
-    Firestore database = FirestoreClient.getFirestore();
-
-    DocumentReference docRef = database.collection("games").document("111");
-
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Path of Exile 2 Steam hub");
+    return databaseHandler.getUpdate(newsPost, "Path of Exile 2 Steam Hub", 111);
   }
 
-  private Update hotfixHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update hotfixHandler() throws IOException, SQLException {
     Update patchPost = retrievePostDetails.getPathOfExile2Hotfix();
 
-    Firestore database = FirestoreClient.getFirestore();
-
-    DocumentReference docRef = database.collection("games").document("113");
-
-    return getUpdate(patchPost, docRef, firestoreDocUpdater, "Path of Exile 2 hotfixes");
+    return databaseHandler.getUpdate(patchPost, "Path of Exile 2 hotfixes", 113);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           PathOfExile2Handler poe2Handler =
-              new PathOfExile2Handler(retrievePostDetails, firestoreDocUpdater);
+              new PathOfExile2Handler(retrievePostDetails, databaseHandler);
           try {
             Update newsPost = poe2Handler.newsHandler();
             if (newsPost != null) {
@@ -79,7 +66,7 @@ public class PathOfExile2Handler implements GameHandler {
     return Mono.fromRunnable(
         () -> {
           PathOfExile2Handler poe2Handler =
-              new PathOfExile2Handler(retrievePostDetails, firestoreDocUpdater);
+              new PathOfExile2Handler(retrievePostDetails, databaseHandler);
           try {
             Update patchPost = poe2Handler.hotfixHandler();
             if (patchPost != null) {
@@ -136,6 +123,6 @@ public class PathOfExile2Handler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runNewsTask(gateway);
+    return runNewsTask(gateway).then(runHotfixTask(gateway));
   }
 }

@@ -1,14 +1,11 @@
 package com.mochibot.data;
 
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
+import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -16,37 +13,32 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 
-import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class HellLetLooseHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
-  private final FirestoreDocUpdater firestoreDocUpdater;
+  private final DatabaseHandler databaseHandler;
 
   public HellLetLooseHandler(
-      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
-    this.firestoreDocUpdater = firestoreDocUpdater;
+    this.databaseHandler = databaseHandler;
   }
 
-  private Update newsHandler() throws IOException, ExecutionException, InterruptedException {
+  private Update newsHandler() throws IOException, SQLException {
     Update newsPost = retrievePostDetails.getHellLetLooseNews();
 
-    Firestore datastore = FirestoreClient.getFirestore();
-
-    DocumentReference docRef = datastore.collection("games").document("104");
-
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Hell Let Loose");
+    return databaseHandler.getUpdate(newsPost, "Hell Let Loose", 104);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
           HellLetLooseHandler hellLetLooseHandler =
-              new HellLetLooseHandler(retrievePostDetails, firestoreDocUpdater);
+              new HellLetLooseHandler(retrievePostDetails, databaseHandler);
           try {
             Update newsPost = hellLetLooseHandler.newsHandler();
             if (newsPost != null) {

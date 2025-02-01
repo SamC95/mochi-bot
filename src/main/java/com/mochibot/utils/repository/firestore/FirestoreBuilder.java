@@ -9,6 +9,7 @@ import com.google.firebase.cloud.FirestoreClient;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+@Deprecated
 public class FirestoreBuilder {
     public void setUpFirebase() throws IOException {
         // File not included on GitHub repo

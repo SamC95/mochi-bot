@@ -7,8 +7,8 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class FirestoreDocUpdater {
-
   public void updateDocumentWithPostData(
       DocumentReference docRef, Update post, String documentName) {
 

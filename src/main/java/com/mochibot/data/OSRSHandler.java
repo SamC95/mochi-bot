@@ -1,14 +1,11 @@
 package com.mochibot.data;
 
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.firebase.cloud.FirestoreClient;
+import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -16,36 +13,31 @@ import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
-import static com.mochibot.utils.repository.UpdateHandler.getUpdate;
 
 public class OSRSHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
-  private final FirestoreDocUpdater firestoreDocUpdater;
+  private final DatabaseHandler databaseHandler;
 
   public OSRSHandler(
-      RetrievePostDetails retrievePostDetails, FirestoreDocUpdater firestoreDocUpdater) {
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
-    this.firestoreDocUpdater = firestoreDocUpdater;
+    this.databaseHandler = databaseHandler;
   }
 
-  private Update newsHandler() throws ExecutionException, InterruptedException, IOException {
+  private Update newsHandler() throws SQLException, IOException {
     Update newsPost = retrievePostDetails.getOldSchoolRuneScapeNews();
 
-    Firestore database = FirestoreClient.getFirestore();
 
-    DocumentReference docRef = database.collection("games").document("112");
-
-    return getUpdate(newsPost, docRef, firestoreDocUpdater, "Old School RuneScape");
+    return databaseHandler.getUpdate(newsPost, "Old School RuneScape", 112);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          OSRSHandler osrsHandler = new OSRSHandler(retrievePostDetails, firestoreDocUpdater);
+          OSRSHandler osrsHandler = new OSRSHandler(retrievePostDetails, databaseHandler);
           try {
             Update newsPost = osrsHandler.newsHandler();
             if (newsPost != null) {

@@ -1,4 +1,4 @@
-### Games by Firestore IDs ###
+### Games by Database IDs ###
 
 Final Fantasy XIV       | 100 | 101 |
 Final Fantasy XI        | 102 | 103 |

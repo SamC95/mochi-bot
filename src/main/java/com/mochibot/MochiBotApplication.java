@@ -1,27 +1,18 @@
 package com.mochibot;
 
-import com.mochibot.utils.repository.firestore.FirestoreBuilder;
 import com.mochibot.utils.loaders.PropertiesLoader;
+import com.mochibot.utils.repository.mysql.DatabaseBuilder;
 
-import java.io.IOException;
+import java.sql.Connection;
 import java.time.LocalTime;
-
-/*
-  Firestore must be set up to use this program and the required mochi-bot.json file added
-  application.properties is not included, which includes the discord token and channel ids
-  These must be implemented for the program to work. Are not provided due to sensitivity of that data.
-*/
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MochiBotApplication {
-  public static void main(String[] args) {
-    try {
-      FirestoreBuilder firestoreBuilder = new FirestoreBuilder();
-      firestoreBuilder.setUpFirebase();
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+  public static void main(String[] args) {
     // Not included in GitHub repo
     String discordToken = PropertiesLoader.loadProperties("DISCORD_TOKEN");
 
@@ -30,7 +21,23 @@ public class MochiBotApplication {
     Thread mochiThread = new Thread(mochi::start);
     mochiThread.start();
 
-    Runtime.getRuntime().addShutdownHook(new Thread(() ->
-            System.out.printf("[%s] [SYSTEM] Stopping MochiBot...", LocalTime.now())));
+    // Handles periodic deletion of old posts from the database (2 months old)
+    scheduler.scheduleAtFixedRate(
+        () -> {
+          DatabaseBuilder dbBuilder = new DatabaseBuilder();
+          Connection connection = DatabaseBuilder.getConnection();
+
+          if (connection != null) {
+            System.out.printf("[%s] [SYSTEM] Beginning old post deletion task\n", LocalTime.now());
+            dbBuilder.deleteOldPosts(connection);
+            System.out.printf("[%s] [SYSTEM] Post deletion task finished\n", LocalTime.now());
+            dbBuilder.closeConnection(connection);
+          }
+        }, 0, 24, TimeUnit.HOURS);
+
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> System.out.printf("[%s] [SYSTEM] Stopping MochiBot...", LocalTime.now())));
   }
 }

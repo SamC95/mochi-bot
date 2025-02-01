@@ -1,6 +1,5 @@
-package com.mochibot.utils.repository;
+package com.mochibot.utils.repository.firestore;
 
-import com.mochibot.utils.repository.firestore.FirestoreDocUpdater;
 import com.example.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
@@ -9,7 +8,8 @@ import java.time.LocalTime;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
-public class UpdateHandler {
+@Deprecated
+public class FirestoreUpdateHandler {
   public static Update getUpdate(
           Update post, DocumentReference docRef, FirestoreDocUpdater firestoreDocUpdater, String documentName)
       throws InterruptedException, ExecutionException {
