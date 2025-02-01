@@ -24,13 +24,12 @@ import java.util.concurrent.TimeUnit;
 
 public class PostScheduler {
   RetrievePostDetails retrievePostDetails = new RetrievePostDetails();
-  DatabaseBuilder databaseBuilder = new DatabaseBuilder();
   DatabaseHandler databaseHandler = new DatabaseHandler();
 
   private final Map<GameHandler, Map<String, Long>> handlerScheduleMap =
       Map.ofEntries(
           Map.entry(
-              new FFXIHandler(retrievePostDetails, databaseBuilder, databaseHandler),
+              new FFXIHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new FFXIVHandler(retrievePostDetails, databaseHandler),

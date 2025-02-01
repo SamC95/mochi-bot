@@ -21,13 +21,11 @@ import java.util.concurrent.ExecutionException;
 
 public class FFXIHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
-  private final DatabaseBuilder databaseBuilder;
   private final DatabaseHandler databaseHandler;
 
   public FFXIHandler(
-      RetrievePostDetails retrievePostDetails, DatabaseBuilder databaseBuilder, DatabaseHandler databaseHandler) {
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
-    this.databaseBuilder = databaseBuilder;
     this.databaseHandler = databaseHandler;
   }
 
@@ -48,7 +46,7 @@ public class FFXIHandler implements GameHandler {
   private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, databaseBuilder, databaseHandler);
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, databaseHandler);
           try {
             Update topicsPost = xiHandler.topicsHandler();
             if (topicsPost != null) {
@@ -65,7 +63,7 @@ public class FFXIHandler implements GameHandler {
   private Mono<Void> runInformationTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, databaseBuilder, databaseHandler);
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, databaseHandler);
           try {
             Update informationPost = xiHandler.informationHandler();
             if (informationPost != null) {
