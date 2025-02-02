@@ -123,6 +123,6 @@ public class PathOfExile2Handler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runNewsTask(gateway).then(runHotfixTask(gateway));
+    return runNewsTask(gateway);
   }
 }
