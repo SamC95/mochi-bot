@@ -5,7 +5,6 @@ import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.mochibot.utils.repository.mysql.DatabaseBuilder;
 import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;

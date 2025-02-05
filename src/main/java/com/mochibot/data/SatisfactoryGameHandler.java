@@ -68,7 +68,7 @@ public class SatisfactoryGameHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "Satisfactory, Steam News Hub",
+                          "Satisfactory: Steam News",
                           "https://store.steampowered.com/news/app/526870",
                           "")
                       .title(post.getTitle())

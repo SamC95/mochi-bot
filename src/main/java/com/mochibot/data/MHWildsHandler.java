@@ -68,7 +68,7 @@ public class MHWildsHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "Monster Hunter Wilds, Steam News Hub",
+                          "Monster Hunter Wilds: Steam News",
                           "https://store.steampowered.com/news/app/2246340",
                           "")
                       .title(post.getTitle())

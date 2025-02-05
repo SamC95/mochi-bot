@@ -69,7 +69,7 @@ public class HellLetLooseHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "Hell Let Loose, Steam News Hub",
+                          "Hell Let Loose: Steam News",
                           "https://store.steampowered.com/news/app/686810",
                           "")
                       .title(post.getTitle())
