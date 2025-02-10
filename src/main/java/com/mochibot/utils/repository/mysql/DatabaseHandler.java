@@ -13,8 +13,8 @@ public class DatabaseHandler {
   public Update getUpdate(Update post, String gameTitle, int gameId) throws SQLException {
     if (post == null || post.getTitle() == null || post.getUrl() == null) {
       System.err.printf(
-          "[%s] [ERROR] Post data for %s is invalid or missing, skipping update.\n",
-          LocalTime.now(), gameTitle);
+              "[%s] [ERROR] Post data for %s is invalid or missing, skipping update.\n",
+              LocalTime.now(), gameTitle);
 
       return null;
     }
@@ -37,8 +37,7 @@ public class DatabaseHandler {
         if (isSameTitle || isSameUrl) {
           System.out.printf("[%s] [INFO] No new post for %s\n", LocalTime.now(), gameTitle);
         }
-      }
-      else {
+      } else {
         insertPost(post, gameId, gameTitle);
         return post;
       }
@@ -49,26 +48,27 @@ public class DatabaseHandler {
 
   private void insertPost(Update post, int gameId, String gameTitle) {
     String insertQuery =
-        "INSERT INTO posts (game_id, author, title, description, image_url, url, post_date) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO posts (game_id, game_name, author, title, description, image_url, url, post_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     LocalDate localDate = LocalDate.now();
     Date sqlDate = Date.valueOf(localDate);
 
     try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
       statement.setInt(1, gameId);
-      statement.setString(2, post.getAuthor());
-      statement.setString(3, post.getTitle());
-      statement.setString(4, post.getDescription());
-      statement.setString(5, post.getImage());
-      statement.setString(6, post.getUrl());
-      statement.setDate(7, sqlDate);
+      statement.setString(2, gameTitle);
+      statement.setString(3, post.getAuthor());
+      statement.setString(4, post.getTitle());
+      statement.setString(5, post.getDescription());
+      statement.setString(6, post.getImage());
+      statement.setString(7, post.getUrl());
+      statement.setDate(8, sqlDate);
 
       statement.executeUpdate();
 
       System.out.printf("[%s] [INFO] Inserted new post for %s\n", LocalTime.now(), gameTitle);
-    }
-    catch (SQLException e) {
-      System.err.printf("[%s] [ERROR] Failed to insert new post for %s: %s\n", LocalTime.now(), gameTitle, e);
+    } catch (SQLException e) {
+      System.err.printf(
+          "[%s] [ERROR] Failed to insert new post for %s: %s\n", LocalTime.now(), gameTitle, e);
     }
   }
 }
