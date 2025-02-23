@@ -9,9 +9,9 @@ import com.mochibot.data.OSRSHandler;
 import com.mochibot.data.PathOfExile2Handler;
 import com.mochibot.data.SatisfactoryGameHandler;
 import com.mochibot.data.TheOldRepublicHandler;
+import com.mochibot.data.ValheimHandler;
 import com.mochibot.data.WarThunderHandler;
 import com.mochibot.data.WorldOfWarcraftHandler;
-import com.mochibot.utils.repository.mysql.DatabaseBuilder;
 import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
@@ -35,31 +35,34 @@ public class PostScheduler {
               new FFXIVHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new WarThunderHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
-          Map.entry(
-              new WorldOfWarcraftHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
-          Map.entry(
               new HellLetLooseHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new TheOldRepublicHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 5L, "interval", 10L)),
+              new MarvelRivalsHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new MHWildsHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new SatisfactoryGameHandler(retrievePostDetails, databaseHandler),
+              new OSRSHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new PathOfExile2Handler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new OSRSHandler(retrievePostDetails, databaseHandler),
+              new ValheimHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
+          Map.entry(
+              new SatisfactoryGameHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
-              new MarvelRivalsHandler(retrievePostDetails, databaseHandler),
+              new TheOldRepublicHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 5L, "interval", 10L)),
+          Map.entry(
+              new WarThunderHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
+          Map.entry(
+              new WorldOfWarcraftHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)));
 
   public void schedulePeriodicPosts(GatewayDiscordClient gateway) {

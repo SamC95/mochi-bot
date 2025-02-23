@@ -12,3 +12,4 @@ World of Warcraft       | 110 |
 Path of Exile 2         | 111 | 113 |
 Old School RuneScape    | 112 |
 Marvel Rivals           | 115 | 116 | 117 |
+Valheim                 | 118 |

@@ -10,6 +10,7 @@ import com.example.scraper.data.Overwatch;
 import com.example.scraper.data.PathOfExile2;
 import com.example.scraper.data.SatisfactoryGame;
 import com.example.scraper.data.TheOldRepublic;
+import com.example.scraper.data.Valheim;
 import com.example.scraper.data.WarThunder;
 import com.example.scraper.data.WorldOfWarcraft;
 import com.example.scraper.model.Update;
@@ -22,15 +23,16 @@ public class RetrievePostDetails {
   FinalFantasyXIV finalFantasyXIV = new FinalFantasyXIV(new JsoupConnector());
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
   HellLetLoose hellLetLoose = new HellLetLoose(new JsoupConnector());
+  MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
   MonsterHunterWilds monsterHunterWilds = new MonsterHunterWilds(new JsoupConnector());
+  OldSchoolRuneScape oldSchoolRuneScape = new OldSchoolRuneScape(new JsoupConnector());
   Overwatch overwatch = new Overwatch(new JsoupConnector());
+  PathOfExile2 pathOfExile2 = new PathOfExile2(new JsoupConnector());
   SatisfactoryGame satisfactoryGame = new SatisfactoryGame(new JsoupConnector());
   TheOldRepublic theOldRepublic = new TheOldRepublic(new JsoupConnector());
+  Valheim valheim = new Valheim(new JsoupConnector());
   WarThunder warThunder = new WarThunder(new JsoupConnector());
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
-  PathOfExile2 pathOfExile2 = new PathOfExile2(new JsoupConnector());
-  OldSchoolRuneScape oldSchoolRuneScape = new OldSchoolRuneScape(new JsoupConnector());
-  MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
 
   public Update getFinalFantasyXIVNews() throws IOException {
     finalFantasyXIV.getNewsFeed();
@@ -63,11 +65,35 @@ public class RetrievePostDetails {
     return hellLetLoose.newsFeed;
   }
 
+  public Update getMarvelRivalsAnnouncements() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/news/", marvelRivals.announcementFeed);
+
+    return marvelRivals.announcementFeed;
+  }
+
+  public Update getMarvelRivalsDevDiaries() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/devdiaries/", marvelRivals.devDiaryFeed);
+
+    return marvelRivals.devDiaryFeed;
+  }
+
+  public Update getMarvelRivalsUpdates() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/gameupdate/", marvelRivals.updateFeed);
+
+    return marvelRivals.updateFeed;
+  }
+
   public Update getMonsterHunterWildsNews() throws IOException {
     SteamRSSParser.getSteamRSSNewsFeed(
         "2246340", monsterHunterWilds.newsFeed, monsterHunterWilds.jsoupConnector);
 
     return monsterHunterWilds.newsFeed;
+  }
+
+  public Update getOldSchoolRuneScapeNews() throws IOException {
+    oldSchoolRuneScape.getNewsFeed();
+
+    return oldSchoolRuneScape.newsFeed;
   }
 
   public Update getOverwatchNews() throws IOException {
@@ -102,6 +128,12 @@ public class RetrievePostDetails {
     return theOldRepublic.newsFeed;
   }
 
+  public Update getValheimNews() throws IOException {
+    valheim.getNewsFeed();
+
+    return valheim.newsFeed;
+  }
+
   public Update getWarThunderPinnedNews() throws IOException {
     warThunder.getPinnedNews();
 
@@ -118,29 +150,5 @@ public class RetrievePostDetails {
     worldOfWarcraft.getNewsFeed();
 
     return worldOfWarcraft.newsFeed;
-  }
-
-  public Update getOldSchoolRuneScapeNews() throws IOException {
-    oldSchoolRuneScape.getNewsFeed();
-
-    return oldSchoolRuneScape.newsFeed;
-  }
-
-  public Update getMarvelRivalsAnnouncements() throws IOException {
-    marvelRivals.getFeed("https://www.marvelrivals.com/news/", marvelRivals.announcementFeed);
-
-    return marvelRivals.announcementFeed;
-  }
-
-  public Update getMarvelRivalsDevDiaries() throws IOException {
-    marvelRivals.getFeed("https://www.marvelrivals.com/devdiaries/", marvelRivals.devDiaryFeed);
-
-    return marvelRivals.devDiaryFeed;
-  }
-
-  public Update getMarvelRivalsUpdates() throws IOException {
-    marvelRivals.getFeed("https://www.marvelrivals.com/gameupdate/", marvelRivals.updateFeed);
-
-    return marvelRivals.updateFeed;
   }
 }
