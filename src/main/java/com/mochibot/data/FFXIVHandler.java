@@ -1,6 +1,5 @@
 package com.mochibot.data;
 
-
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
 import com.mochibot.utils.loaders.PropertiesLoader;
@@ -22,8 +21,7 @@ public class FFXIVHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public FFXIVHandler(
-      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
+  public FFXIVHandler(RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
@@ -90,7 +88,10 @@ public class FFXIVHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author(post.getAuthor(), "https://eu.finalfantasyxiv.com/lodestone/", "")
+                      .author(
+                          "Final Fantasy XIV: The Lodestone",
+                          "https://eu.finalfantasyxiv.com/lodestone/",
+                          "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)

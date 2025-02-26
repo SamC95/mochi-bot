@@ -146,6 +146,18 @@ public class RetrievePostDetails {
     return warThunder.unpinnedNewsFeed;
   }
 
+  public Update getWarThunderPinnedChangelog() throws IOException {
+    warThunder.getPinnedChangelog();
+
+    return warThunder.pinnedChangelogFeed;
+  }
+
+  public Update getWarThunderUnpinnedChangelog() throws IOException {
+    warThunder.getUnpinnedChangelog();
+
+    return warThunder.unpinnedChangelogFeed;
+  }
+
   public Update getWorldOfWarcraftNews() throws IOException {
     worldOfWarcraft.getNewsFeed();
 

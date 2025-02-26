@@ -50,14 +50,14 @@ public class PostScheduler {
               new PathOfExile2Handler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
-              new ValheimHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
-          Map.entry(
               new SatisfactoryGameHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new TheOldRepublicHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
+          Map.entry(
+              new ValheimHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new WarThunderHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),

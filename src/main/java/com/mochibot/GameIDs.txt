@@ -3,13 +3,13 @@
 Final Fantasy XIV       | 100 | 101 |
 Final Fantasy XI        | 102 | 103 |
 Hell Let Loose          | 104 |
+Marvel Rivals           | 115 | 116 | 117 |
 Monster Hunter Wilds    | 105 |
+Old School RuneScape    | 112 |
 Overwatch               | 106 |
+Path of Exile 2         | 111 | 113 |
 Satisfactory            | 107 |
 The Old Republic        | 108 |
-War Thunder             | 109 | 114 |
-World of Warcraft       | 110 |
-Path of Exile 2         | 111 | 113 |
-Old School RuneScape    | 112 |
-Marvel Rivals           | 115 | 116 | 117 |
 Valheim                 | 118 |
+War Thunder             | 109 | 114 | 119 | 120 |
+World of Warcraft       | 110 |

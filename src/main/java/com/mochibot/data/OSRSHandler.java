@@ -68,7 +68,7 @@ public class OSRSHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "OSRS, " + post.getCategory(),
+                          "OSRS: " + post.getCategory(),
                           "https://secure.runescape.com/m=news/archive?oldschool=1",
                           "")
                       .title(post.getTitle())

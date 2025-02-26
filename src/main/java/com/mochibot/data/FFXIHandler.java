@@ -93,7 +93,7 @@ public class FFXIHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "FINAL FANTASY XI, PlayOnline",
+                          "FINAL FANTASY XI: PlayOnline",
                           "http://www.playonline.com/ff11eu/index.shtml",
                           "")
                       .title(post.getTitle())

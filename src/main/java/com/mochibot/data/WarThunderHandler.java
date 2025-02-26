@@ -30,13 +30,25 @@ public class WarThunderHandler implements GameHandler {
   private Update pinnedNewsHandler() throws SQLException, IOException {
     Update newsPost = retrievePostDetails.getWarThunderPinnedNews();
 
-    return databaseHandler.getUpdate(newsPost, "War Thunder (pinned)", 114);
+    return databaseHandler.getUpdate(newsPost, "War Thunder news (pinned)", 114);
   }
 
   private Update unpinnedNewsHandler() throws IOException, SQLException {
     Update newsPost = retrievePostDetails.getWarThunderUnpinnedNews();
 
-    return databaseHandler.getUpdate(newsPost, "War Thunder (unpinned)", 109);
+    return databaseHandler.getUpdate(newsPost, "War Thunder news (unpinned)", 109);
+  }
+
+  private Update pinnedChangelogHandler() throws IOException, SQLException {
+    Update changelogPost = retrievePostDetails.getWarThunderPinnedChangelog();
+
+    return databaseHandler.getUpdate(changelogPost, "War Thunder changelog (pinned)", 119);
+  }
+
+  private Update unpinnedChangelogHandler() throws IOException, SQLException {
+    Update changelogPost = retrievePostDetails.getWarThunderUnpinnedChangelog();
+
+    return databaseHandler.getUpdate(changelogPost, "War Thunder changelog (unpinned)", 120);
   }
 
   private Mono<Void> runPinnedNewsTask(GatewayDiscordClient gateway) {
@@ -48,11 +60,11 @@ public class WarThunderHandler implements GameHandler {
           try {
             Update newsPost = warThunderHandler.pinnedNewsHandler();
             if (newsPost != null) {
-              postUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost, "War Thunder News", "https://warthunder.com/en/news");
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                "[%s] [ERROR] Failed to fetch War Thunder pinned news: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
@@ -67,17 +79,66 @@ public class WarThunderHandler implements GameHandler {
           try {
             Update newsPost = warThunderHandler.unpinnedNewsHandler();
             if (newsPost != null) {
-              postUpdate(gateway, newsPost);
+              postUpdate(gateway, newsPost, "War Thunder News", "https://warthunder.com/en/news");
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch War Thunder update: %s\n",
+                "[%s] [ERROR] Failed to fetch War Thunder unpinned news: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  private void postUpdate(GatewayDiscordClient gateway, Update post) {
+  private Mono<Void> runPinnedChangelogTask(GatewayDiscordClient gateway) {
+    return Mono.fromRunnable(
+        () -> {
+          WarThunderHandler warThunderHandler =
+              new WarThunderHandler(retrievePostDetails, databaseHandler);
+
+          try {
+            Update changelogPost = warThunderHandler.pinnedChangelogHandler();
+
+            if (changelogPost != null) {
+              postUpdate(
+                  gateway,
+                  changelogPost,
+                  "War Thunder Changelog",
+                  "https://warthunder.com/en/game/changelog/");
+            }
+          } catch (Exception e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch War Thunder pinned changelog: %s\n",
+                LocalTime.now(), e.getMessage());
+          }
+        });
+  }
+
+  private Mono<Void> runUnpinnedChangelogTask(GatewayDiscordClient gateway) {
+    return Mono.fromRunnable(
+        () -> {
+          WarThunderHandler warThunderHandler =
+              new WarThunderHandler(retrievePostDetails, databaseHandler);
+
+          try {
+            Update changelogPost = warThunderHandler.unpinnedChangelogHandler();
+
+            if (changelogPost != null) {
+              postUpdate(
+                  gateway,
+                  changelogPost,
+                  "War Thunder Changelog",
+                  "https://warthunder.com/en/game/changelog/");
+            }
+          } catch (Exception e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch War Thunder pinned changelog: %s\n",
+                LocalTime.now(), e.getMessage());
+          }
+        });
+  }
+
+  private void postUpdate(
+      GatewayDiscordClient gateway, Update post, String authorName, String authorUrl) {
     var channelId = PropertiesLoader.loadProperties("WAR_THUNDER_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
@@ -93,7 +154,7 @@ public class WarThunderHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author("War Thunder", "https://warthunder.com/en/news", "")
+                      .author(authorName, authorUrl, "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
@@ -109,6 +170,9 @@ public class WarThunderHandler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runUnpinnedNewsTask(gateway).then(runPinnedNewsTask(gateway));
+    return runUnpinnedNewsTask(gateway)
+        .then(
+            runPinnedNewsTask(gateway)
+                .then(runPinnedChangelogTask(gateway).then(runUnpinnedChangelogTask(gateway))));
   }
 }
