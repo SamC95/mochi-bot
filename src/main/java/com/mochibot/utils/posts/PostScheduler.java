@@ -1,5 +1,6 @@
 package com.mochibot.utils.posts;
 
+import com.mochibot.data.CivilizationVIIHandler;
 import com.mochibot.data.FFXIHandler;
 import com.mochibot.data.FFXIVHandler;
 import com.mochibot.data.HellLetLooseHandler;
@@ -29,6 +30,9 @@ public class PostScheduler {
 
   private final Map<GameHandler, Map<String, Long>> handlerScheduleMap =
       Map.ofEntries(
+          Map.entry(
+              new CivilizationVIIHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new FFXIHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),

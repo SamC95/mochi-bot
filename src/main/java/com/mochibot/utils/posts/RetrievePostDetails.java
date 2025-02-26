@@ -1,5 +1,6 @@
 package com.mochibot.utils.posts;
 
+import com.example.scraper.data.CivilizationVII;
 import com.example.scraper.data.FinalFantasyXI;
 import com.example.scraper.data.FinalFantasyXIV;
 import com.example.scraper.data.HellLetLoose;
@@ -21,6 +22,7 @@ import com.example.scraper.utils.SteamRSSParser;
 import java.io.IOException;
 
 public class RetrievePostDetails {
+  CivilizationVII civilizationVII = new CivilizationVII(new JsoupConnector());
   FinalFantasyXIV finalFantasyXIV = new FinalFantasyXIV(new JsoupConnector());
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
   HellLetLoose hellLetLoose = new HellLetLoose(new JsoupConnector());
@@ -35,6 +37,12 @@ public class RetrievePostDetails {
   Valheim valheim = new Valheim(new JsoupConnector());
   WarThunder warThunder = new WarThunder(new JsoupConnector());
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
+
+  public Update getCivilizationVIINews() throws IOException {
+    civilizationVII.getNewsFeed();
+
+    return civilizationVII.newsFeed;
+  }
 
   public Update getFinalFantasyXIVNews() throws IOException {
     finalFantasyXIV.getNewsFeed();
