@@ -3,6 +3,7 @@ package com.mochibot.utils.posts;
 import com.example.scraper.data.FinalFantasyXI;
 import com.example.scraper.data.FinalFantasyXIV;
 import com.example.scraper.data.HellLetLoose;
+import com.example.scraper.data.KillingFloor3;
 import com.example.scraper.data.MarvelRivals;
 import com.example.scraper.data.MonsterHunterWilds;
 import com.example.scraper.data.OldSchoolRuneScape;
@@ -23,6 +24,7 @@ public class RetrievePostDetails {
   FinalFantasyXIV finalFantasyXIV = new FinalFantasyXIV(new JsoupConnector());
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
   HellLetLoose hellLetLoose = new HellLetLoose(new JsoupConnector());
+  KillingFloor3 killingFloor3 = new KillingFloor3(new JsoupConnector());
   MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
   MonsterHunterWilds monsterHunterWilds = new MonsterHunterWilds(new JsoupConnector());
   OldSchoolRuneScape oldSchoolRuneScape = new OldSchoolRuneScape(new JsoupConnector());
@@ -63,6 +65,12 @@ public class RetrievePostDetails {
         "686810", hellLetLoose.newsFeed, hellLetLoose.jsoupConnector);
 
     return hellLetLoose.newsFeed;
+  }
+
+  public Update getKillingFloor3News() throws IOException {
+    SteamRSSParser.getSteamRSSNewsFeed("1430190", killingFloor3.newsFeed, killingFloor3.jsoupConnector);
+
+    return killingFloor3.newsFeed;
   }
 
   public Update getMarvelRivalsAnnouncements() throws IOException {

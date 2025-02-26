@@ -3,6 +3,7 @@
 Final Fantasy XIV       | 100 | 101 |
 Final Fantasy XI        | 102 | 103 |
 Hell Let Loose          | 104 |
+Killing Floor 3         | 121 |
 Marvel Rivals           | 115 | 116 | 117 |
 Monster Hunter Wilds    | 105 |
 Old School RuneScape    | 112 |
