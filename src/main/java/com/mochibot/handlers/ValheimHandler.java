@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.example.scraper.model.Update;
 import com.mochibot.utils.loaders.PropertiesLoader;
@@ -17,44 +17,42 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class CivilizationVIIHandler implements GameHandler {
+public class ValheimHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public CivilizationVIIHandler(
-      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
+  public ValheimHandler(RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
   private Update newsHandler() throws SQLException, IOException {
-    Update newsPost = retrievePostDetails.getCivilizationVIINews();
+    Update newsPost = retrievePostDetails.getValheimNews();
 
-    return databaseHandler.getUpdate(newsPost, "Sid Meier's Civilization VII", 122);
+    return databaseHandler.getUpdate(newsPost, "Valheim", 118);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          CivilizationVIIHandler civilizationVIIHandler =
-              new CivilizationVIIHandler(retrievePostDetails, databaseHandler);
+          ValheimHandler valheimHandler = new ValheimHandler(retrievePostDetails, databaseHandler);
 
           try {
-            Update newsPost = civilizationVIIHandler.newsHandler();
+            Update newsPost = valheimHandler.newsHandler();
 
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Civilization VII news: %s\n",
+                "[%s] [ERROR] Failed to fetch Valheim update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("CIV7_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("VALHEIM_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -67,26 +65,18 @@ public class CivilizationVIIHandler implements GameHandler {
                       ? post.getImage()
                       : "";
 
-              String description =
-                  post.getDescription() != null
-                          && !Objects.equals(post.getDescription(), "No description available")
-                      ? post.getDescription()
-                      : "";
-
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author(
-                          "Sid Meier's Civilization VII",
-                          "https://civilization.2k.com/en-GB/civ-vii/news/",
-                          "")
+                      .author("Valheim", "https://www.valheimgame.com/news/", "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
-                      .description(description)
+                      .description(post.getDescription())
                       .thumbnail(
-                          "https://raw.githubusercontent.com/SamC95/news-scraper/refs/heads/master/src/main/resources/thumbnails/Civ7_hex_logo.png")
+                          "https://raw.githubusercontent.com/SamC95/news-scraper/refs/heads/master/src/main/resources/thumbnails/Valheim_game_logo.png")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
+
               return channel.createMessage(embed);
             })
         .subscribe();

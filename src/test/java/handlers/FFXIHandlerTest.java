@@ -1,9 +1,8 @@
 package handlers;
 
-import com.mochibot.data.FFXIHandler;
+import com.mochibot.handlers.FFXIHandler;
 import com.mochibot.utils.posts.RetrievePostDetails;
 import com.example.scraper.model.Update;
-import com.mochibot.utils.repository.mysql.DatabaseBuilder;
 import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

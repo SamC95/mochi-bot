@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;

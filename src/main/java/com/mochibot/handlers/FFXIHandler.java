@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
@@ -16,64 +16,68 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
-public class FFXIVHandler implements GameHandler {
+public class FFXIHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public FFXIVHandler(RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
+  public FFXIHandler(
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
-  private Update topicsHandler() throws IOException, SQLException {
-    Update topicsPost = retrievePostDetails.getFinalFantasyXIVTopics();
+  // Topics news feed
+  private Update topicsHandler() throws IOException, ExecutionException, InterruptedException, SQLException {
+    Update topicsPost = retrievePostDetails.getFinalFantasyXITopics();
 
-    return databaseHandler.getUpdate(topicsPost, "Final Fantasy XIV topics", 100);
+    return databaseHandler.getUpdate(topicsPost, "Final Fantasy XI topics", 102);
   }
 
-  private Update newsHandler() throws IOException, SQLException {
-    Update newsPost = retrievePostDetails.getFinalFantasyXIVNews();
+  // Information news feed
+  private Update informationHandler() throws IOException, ExecutionException, InterruptedException, SQLException {
+    Update informationPost = retrievePostDetails.getFinalFantasyXIInformation();
 
-    return databaseHandler.getUpdate(newsPost, "Final Fantasy XIV news", 101);
+    return databaseHandler.getUpdate(informationPost, "Final Fantasy XI information", 103);
   }
 
   private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, databaseHandler);
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, databaseHandler);
           try {
-            Update topicsPost = xivHandler.topicsHandler();
+            Update topicsPost = xiHandler.topicsHandler();
             if (topicsPost != null) {
               postUpdate(gateway, topicsPost);
             }
-          } catch (Exception e) {
+          } catch (IOException | ExecutionException | InterruptedException | SQLException e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone topics update: %s\n",
+                "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline topics update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
-  private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
+  private Mono<Void> runInformationTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, databaseHandler);
+          FFXIHandler xiHandler = new FFXIHandler(retrievePostDetails, databaseHandler);
           try {
-            Update newsPost = xivHandler.newsHandler();
-            if (newsPost != null) {
-              postUpdate(gateway, newsPost);
+            Update informationPost = xiHandler.informationHandler();
+            if (informationPost != null) {
+              postUpdate(gateway, informationPost);
             }
-          } catch (Exception e) {
+          } catch (IOException | ExecutionException | InterruptedException | SQLException e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone news update: %s\n",
+                "[%s] [ERROR] Failed to fetch Final Fantasy XI PlayOnline information update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("FFXIV_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("FFXI_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -89,14 +93,15 @@ public class FFXIVHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "Final Fantasy XIV: The Lodestone",
-                          "https://eu.finalfantasyxiv.com/lodestone/",
+                          "FINAL FANTASY XI: PlayOnline",
+                          "http://www.playonline.com/ff11eu/index.shtml",
                           "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
-                      .thumbnail("https://lodestonenews.com/images/thumbnail.png")
+                      .thumbnail(
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/ffxi-logo-icon.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
@@ -106,6 +111,6 @@ public class FFXIVHandler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runTopicsTask(gateway).then(runNewsTask(gateway));
+    return runTopicsTask(gateway).then(runInformationTask(gateway));
   }
 }

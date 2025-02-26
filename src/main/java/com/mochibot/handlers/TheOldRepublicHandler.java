@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
@@ -17,42 +17,42 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class SatisfactoryGameHandler implements GameHandler {
+public class TheOldRepublicHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public SatisfactoryGameHandler(
+  public TheOldRepublicHandler(
       RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
   private Update newsHandler() throws SQLException, IOException {
-    Update newsPost = retrievePostDetails.getSatisfactoryGameNews();
+    Update newsPost = retrievePostDetails.getTheOldRepublicNews();
 
-    return databaseHandler.getUpdate(newsPost, "Satisfactory", 107);
+    return databaseHandler.getUpdate(newsPost, "Star Wars: The Old Republic", 108);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          SatisfactoryGameHandler satisfactoryGameHandler =
-              new SatisfactoryGameHandler(retrievePostDetails, databaseHandler);
+          TheOldRepublicHandler theOldRepublicHandler =
+              new TheOldRepublicHandler(retrievePostDetails, databaseHandler);
           try {
-            Update newsPost = satisfactoryGameHandler.newsHandler();
+            Update newsPost = theOldRepublicHandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Satisfactory game update: %s\n",
+                "[%s] [ERROR] Failed to fetch Star Wars: The Old Republic update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("SATISFACTORY_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("SWTOR_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -67,16 +67,13 @@ public class SatisfactoryGameHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author(
-                          "Satisfactory: Steam News",
-                          "https://store.steampowered.com/news/app/526870",
-                          "")
+                      .author("Star Wars: The Old Republic", "https://www.swtor.com/info/news", "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
                       .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/satisfactory-logo.png?raw=true")
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/swtorlogo.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);

@@ -1,10 +1,10 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
-import com.example.scraper.model.Update;
-import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
+import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.RetrievePostDetails;
+import com.example.scraper.model.Update;
 import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
@@ -17,42 +17,42 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class ValheimHandler implements GameHandler {
+public class MHWildsHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public ValheimHandler(RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
+  public MHWildsHandler(
+      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
   private Update newsHandler() throws SQLException, IOException {
-    Update newsPost = retrievePostDetails.getValheimNews();
+    Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
 
-    return databaseHandler.getUpdate(newsPost, "Valheim", 118);
+    return databaseHandler.getUpdate(newsPost, "Monster Hunter Wilds", 105);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          ValheimHandler valheimHandler = new ValheimHandler(retrievePostDetails, databaseHandler);
-
+          MHWildsHandler mhWildshandler =
+              new MHWildsHandler(retrievePostDetails, databaseHandler);
           try {
-            Update newsPost = valheimHandler.newsHandler();
-
+            Update newsPost = mhWildshandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Valheim update: %s\n",
+                "[%s] [ERROR] Failed to fetch Monster Hunter: Wilds steam news update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("VALHEIM_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("MHWILDS_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -67,16 +67,18 @@ public class ValheimHandler implements GameHandler {
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
-                      .author("Valheim", "https://www.valheimgame.com/news/", "")
+                      .author(
+                          "Monster Hunter Wilds: Steam News",
+                          "https://store.steampowered.com/news/app/2246340",
+                          "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
                       .thumbnail(
-                          "https://raw.githubusercontent.com/SamC95/news-scraper/refs/heads/master/src/main/resources/thumbnails/Valheim_game_logo.png")
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/mhwilds-logo.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
-
               return channel.createMessage(embed);
             })
         .subscribe();

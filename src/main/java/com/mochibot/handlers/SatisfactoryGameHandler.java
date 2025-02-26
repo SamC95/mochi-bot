@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
@@ -17,42 +17,42 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class WorldOfWarcraftHandler implements GameHandler {
+public class SatisfactoryGameHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public WorldOfWarcraftHandler(
+  public SatisfactoryGameHandler(
       RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
   private Update newsHandler() throws SQLException, IOException {
-    Update newsPost = retrievePostDetails.getWorldOfWarcraftNews();
+    Update newsPost = retrievePostDetails.getSatisfactoryGameNews();
 
-    return databaseHandler.getUpdate(newsPost, "World of Warcraft", 110);
+    return databaseHandler.getUpdate(newsPost, "Satisfactory", 107);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          WorldOfWarcraftHandler worldOfWarcraftHandler =
-              new WorldOfWarcraftHandler(retrievePostDetails, databaseHandler);
+          SatisfactoryGameHandler satisfactoryGameHandler =
+              new SatisfactoryGameHandler(retrievePostDetails, databaseHandler);
           try {
-            Update newsPost = worldOfWarcraftHandler.newsHandler();
+            Update newsPost = satisfactoryGameHandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch world of warcraft update: %s\n",
+                "[%s] [ERROR] Failed to fetch Satisfactory game update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("WOW_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("SATISFACTORY_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -68,15 +68,15 @@ public class WorldOfWarcraftHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "World of Warcraft",
-                          "https://worldofwarcraft.blizzard.com/en-gb/news",
+                          "Satisfactory: Steam News",
+                          "https://store.steampowered.com/news/app/526870",
                           "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
                       .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/worldofwarcraft-logo.png?raw=true")
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/satisfactory-logo.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);

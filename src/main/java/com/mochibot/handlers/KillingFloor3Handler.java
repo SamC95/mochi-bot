@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.example.scraper.model.Update;
 import com.mochibot.utils.loaders.PropertiesLoader;

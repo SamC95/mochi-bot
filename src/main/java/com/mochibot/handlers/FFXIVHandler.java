@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
@@ -17,42 +17,63 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class MHWildsHandler implements GameHandler {
+public class FFXIVHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public MHWildsHandler(
-      RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
+  public FFXIVHandler(RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
-  private Update newsHandler() throws SQLException, IOException {
-    Update newsPost = retrievePostDetails.getMonsterHunterWildsNews();
+  private Update topicsHandler() throws IOException, SQLException {
+    Update topicsPost = retrievePostDetails.getFinalFantasyXIVTopics();
 
-    return databaseHandler.getUpdate(newsPost, "Monster Hunter Wilds", 105);
+    return databaseHandler.getUpdate(topicsPost, "Final Fantasy XIV topics", 100);
+  }
+
+  private Update newsHandler() throws IOException, SQLException {
+    Update newsPost = retrievePostDetails.getFinalFantasyXIVNews();
+
+    return databaseHandler.getUpdate(newsPost, "Final Fantasy XIV news", 101);
+  }
+
+  private Mono<Void> runTopicsTask(GatewayDiscordClient gateway) {
+    return Mono.fromRunnable(
+        () -> {
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, databaseHandler);
+          try {
+            Update topicsPost = xivHandler.topicsHandler();
+            if (topicsPost != null) {
+              postUpdate(gateway, topicsPost);
+            }
+          } catch (Exception e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone topics update: %s\n",
+                LocalTime.now(), e.getMessage());
+          }
+        });
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          MHWildsHandler mhWildshandler =
-              new MHWildsHandler(retrievePostDetails, databaseHandler);
+          FFXIVHandler xivHandler = new FFXIVHandler(retrievePostDetails, databaseHandler);
           try {
-            Update newsPost = mhWildshandler.newsHandler();
+            Update newsPost = xivHandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Monster Hunter: Wilds steam news update: %s\n",
+                "[%s] [ERROR] Failed to fetch Final Fantasy XIV Lodestone news update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("MHWILDS_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("FFXIV_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -68,15 +89,14 @@ public class MHWildsHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "Monster Hunter Wilds: Steam News",
-                          "https://store.steampowered.com/news/app/2246340",
+                          "Final Fantasy XIV: The Lodestone",
+                          "https://eu.finalfantasyxiv.com/lodestone/",
                           "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
-                      .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/mhwilds-logo.png?raw=true")
+                      .thumbnail("https://lodestonenews.com/images/thumbnail.png")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
@@ -86,6 +106,6 @@ public class MHWildsHandler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runNewsTask(gateway);
+    return runTopicsTask(gateway).then(runNewsTask(gateway));
   }
 }

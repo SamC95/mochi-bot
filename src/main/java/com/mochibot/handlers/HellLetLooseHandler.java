@@ -1,4 +1,4 @@
-package com.mochibot.data;
+package com.mochibot.handlers;
 
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;
@@ -17,42 +17,43 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class OSRSHandler implements GameHandler {
+
+public class HellLetLooseHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public OSRSHandler(
+  public HellLetLooseHandler(
       RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
-  private Update newsHandler() throws SQLException, IOException {
-    Update newsPost = retrievePostDetails.getOldSchoolRuneScapeNews();
+  private Update newsHandler() throws IOException, SQLException {
+    Update newsPost = retrievePostDetails.getHellLetLooseNews();
 
-
-    return databaseHandler.getUpdate(newsPost, "Old School RuneScape", 112);
+    return databaseHandler.getUpdate(newsPost, "Hell Let Loose", 104);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          OSRSHandler osrsHandler = new OSRSHandler(retrievePostDetails, databaseHandler);
+          HellLetLooseHandler hellLetLooseHandler =
+              new HellLetLooseHandler(retrievePostDetails, databaseHandler);
           try {
-            Update newsPost = osrsHandler.newsHandler();
+            Update newsPost = hellLetLooseHandler.newsHandler();
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Old School RuneScape update: %s\n",
+                "[%s] [ERROR] Failed to fetch Hell Let Loose update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("OSRS_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("HLL_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -68,15 +69,15 @@ public class OSRSHandler implements GameHandler {
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "OSRS: " + post.getCategory(),
-                          "https://secure.runescape.com/m=news/archive?oldschool=1",
+                          "Hell Let Loose: Steam News",
+                          "https://store.steampowered.com/news/app/686810",
                           "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(post.getDescription())
                       .thumbnail(
-                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/osrs-logo.png?raw=true")
+                          "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/hell-let-loose-logo.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
