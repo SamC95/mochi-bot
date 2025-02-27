@@ -8,6 +8,7 @@ import com.mochibot.handlers.KillingFloor3Handler;
 import com.mochibot.handlers.MHWildsHandler;
 import com.mochibot.handlers.MarvelRivalsHandler;
 import com.mochibot.handlers.OSRSHandler;
+import com.mochibot.handlers.OverwatchHandler;
 import com.mochibot.handlers.PathOfExile2Handler;
 import com.mochibot.handlers.SatisfactoryGameHandler;
 import com.mochibot.handlers.TheOldRepublicHandler;
@@ -32,7 +33,7 @@ public class PostScheduler {
       Map.ofEntries(
           Map.entry(
               new CivilizationVIIHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new FFXIHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
@@ -54,6 +55,9 @@ public class PostScheduler {
           Map.entry(
               new OSRSHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
+          Map.entry(
+              new OverwatchHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new PathOfExile2Handler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),

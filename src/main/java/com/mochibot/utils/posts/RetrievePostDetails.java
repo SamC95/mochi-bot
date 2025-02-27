@@ -115,7 +115,13 @@ public class RetrievePostDetails {
   public Update getOverwatchNews() throws IOException {
     overwatch.getNewsFeed();
 
-    return overwatch.update;
+    return overwatch.newsFeed;
+  }
+
+  public Update getOverwatchPatchNotes() throws IOException {
+    overwatch.getPatchNotes();
+
+    return overwatch.patchFeed;
   }
 
   public Update getPathOfExile2News() throws IOException {
