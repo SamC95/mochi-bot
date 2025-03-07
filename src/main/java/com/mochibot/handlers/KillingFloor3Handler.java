@@ -63,6 +63,12 @@ public class KillingFloor3Handler implements GameHandler {
                                             ? post.getImage()
                                             : "";
 
+                            String description =
+                                    post.getDescription() != null
+                                            && !Objects.equals(post.getDescription(), "No description available")
+                                            ? post.getDescription()
+                                            : "";
+
                             EmbedCreateSpec embed =
                                     EmbedCreateSpec.builder()
                                             .author("Killing Floor 3: Steam News",
@@ -70,7 +76,7 @@ public class KillingFloor3Handler implements GameHandler {
                                             .title(post.getTitle())
                                             .url(post.getUrl())
                                             .image(image)
-                                            .description(post.getDescription())
+                                            .description(description)
                                             .thumbnail("https://raw.githubusercontent.com/SamC95/news-scraper/refs/heads/master/src/main/resources/thumbnails/kf3logo.jpg")
                                             .footer("News provided by MochiBot • " + formattedDate, "")
                                             .build();

@@ -65,6 +65,12 @@ public class MHWildsHandler implements GameHandler {
                       ? post.getImage()
                       : "";
 
+                String description =
+                        post.getDescription() != null
+                                && !Objects.equals(post.getDescription(), "No description available")
+                                ? post.getDescription()
+                                : "";
+
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
@@ -74,7 +80,7 @@ public class MHWildsHandler implements GameHandler {
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
-                      .description(post.getDescription())
+                      .description(description)
                       .thumbnail(
                           "https://github.com/SamC95/news-scraper/blob/master/src/main/resources/thumbnails/mhwilds-logo.png?raw=true")
                       .footer("News provided by MochiBot • " + formattedDate, "")
