@@ -1,23 +1,23 @@
 package com.mochibot.utils.posts;
 
-import com.example.scraper.data.CivilizationVII;
-import com.example.scraper.data.FinalFantasyXI;
-import com.example.scraper.data.FinalFantasyXIV;
-import com.example.scraper.data.HellLetLoose;
-import com.example.scraper.data.KillingFloor3;
-import com.example.scraper.data.MarvelRivals;
-import com.example.scraper.data.MonsterHunterWilds;
-import com.example.scraper.data.OldSchoolRuneScape;
-import com.example.scraper.data.Overwatch;
-import com.example.scraper.data.PathOfExile2;
-import com.example.scraper.data.SatisfactoryGame;
-import com.example.scraper.data.TheOldRepublic;
-import com.example.scraper.data.Valheim;
-import com.example.scraper.data.WarThunder;
-import com.example.scraper.data.WorldOfWarcraft;
-import com.example.scraper.model.Update;
-import com.example.scraper.utils.JsoupConnector;
-import com.example.scraper.utils.SteamRSSParser;
+import com.mochi.scraper.data.CivilizationVII;
+import com.mochi.scraper.data.FinalFantasyXI;
+import com.mochi.scraper.data.FinalFantasyXIV;
+import com.mochi.scraper.data.HellLetLoose;
+import com.mochi.scraper.data.KillingFloor3;
+import com.mochi.scraper.data.MarvelRivals;
+import com.mochi.scraper.data.MonsterHunterWilds;
+import com.mochi.scraper.data.OldSchoolRuneScape;
+import com.mochi.scraper.data.Overwatch;
+import com.mochi.scraper.data.PathOfExile2;
+import com.mochi.scraper.data.SatisfactoryGame;
+import com.mochi.scraper.data.TheOldRepublic;
+import com.mochi.scraper.data.Valheim;
+import com.mochi.scraper.data.WarThunder;
+import com.mochi.scraper.data.WorldOfWarcraft;
+import com.mochi.scraper.model.Update;
+import com.mochi.scraper.utils.JsoupConnector;
+import com.mochi.scraper.utils.SteamRSSParser;
 
 import java.io.IOException;
 

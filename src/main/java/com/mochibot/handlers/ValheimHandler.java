@@ -1,6 +1,6 @@
 package com.mochibot.handlers;
 
-import com.example.scraper.model.Update;
+import com.mochi.scraper.model.Update;
 import com.mochibot.utils.loaders.PropertiesLoader;
 import com.mochibot.utils.posts.DateFormatter;
 import com.mochibot.utils.posts.GameHandler;

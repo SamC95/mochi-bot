@@ -1,6 +1,6 @@
 package com.mochibot.utils.repository.firestore;
 
-import com.example.scraper.model.Update;
+import com.mochi.scraper.model.Update;
 import com.google.cloud.firestore.DocumentReference;
 
 import java.time.LocalTime;

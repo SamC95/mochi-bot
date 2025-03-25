@@ -1,6 +1,6 @@
 package com.mochibot.utils.repository.mysql;
 
-import com.example.scraper.model.Update;
+import com.mochi.scraper.model.Update;
 
 import java.sql.*;
 import java.time.LocalDate;
