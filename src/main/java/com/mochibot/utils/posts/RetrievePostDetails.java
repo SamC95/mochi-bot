@@ -16,6 +16,7 @@ import com.mochi.scraper.data.TheOldRepublic;
 import com.mochi.scraper.data.Valheim;
 import com.mochi.scraper.data.WarThunder;
 import com.mochi.scraper.data.WorldOfWarcraft;
+import com.mochi.scraper.data.ZenlessZoneZero;
 import com.mochi.scraper.model.Update;
 import com.mochi.scraper.utils.JsoupConnector;
 import com.mochi.scraper.utils.PlaywrightConnector;
@@ -43,6 +44,7 @@ public class RetrievePostDetails {
   Valheim valheim = new Valheim(new JsoupConnector());
   WarThunder warThunder = new WarThunder(new JsoupConnector());
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
+  ZenlessZoneZero zenlessZoneZero = new ZenlessZoneZero(new PlaywrightConnector());
 
   public Update getCivilizationVIINews() throws IOException {
     civilizationVII.getNewsFeed();
@@ -217,5 +219,31 @@ public class RetrievePostDetails {
     worldOfWarcraft.getNewsFeed();
 
     return worldOfWarcraft.newsFeed;
+  }
+
+  public Update getZenlessZoneZeroNews() {
+    CompletableFuture<Void> future =
+            CompletableFuture.runAsync(
+                    () -> {
+                      try {
+                        zenlessZoneZero.getNewsFeed();
+                      }
+                      catch (IOException e) {
+                        System.err.printf(
+                                "[%s] [ERROR] Failed to retrieve zenless zone zero post: %s\n",
+                                LocalTime.now(), e.getMessage());
+                      }
+                    });
+
+    try {
+      future.get();
+    }
+    catch (InterruptedException | ExecutionException e) {
+      System.err.printf(
+              "[%s] [ERROR] Failed to retrieve zenless zone zero post: %s\n",
+              LocalTime.now(), e.getMessage());
+    }
+
+    return zenlessZoneZero.newsFeed;
   }
 }

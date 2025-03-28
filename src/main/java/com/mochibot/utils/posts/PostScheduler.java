@@ -16,6 +16,7 @@ import com.mochibot.handlers.TheOldRepublicHandler;
 import com.mochibot.handlers.ValheimHandler;
 import com.mochibot.handlers.WarThunderHandler;
 import com.mochibot.handlers.WorldOfWarcraftHandler;
+import com.mochibot.handlers.ZenlessZoneZeroHandler;
 import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.core.GatewayDiscordClient;
 import reactor.core.scheduler.Schedulers;
@@ -64,7 +65,7 @@ public class PostScheduler {
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new PathOfExile2Handler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new SatisfactoryGameHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
@@ -73,12 +74,15 @@ public class PostScheduler {
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new ValheimHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new WarThunderHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new WorldOfWarcraftHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
+          Map.entry(
+              new ZenlessZoneZeroHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)));
 
   public void schedulePeriodicPosts(GatewayDiscordClient gateway) {

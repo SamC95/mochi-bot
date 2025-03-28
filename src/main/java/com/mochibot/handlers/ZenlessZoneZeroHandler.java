@@ -12,49 +12,48 @@ import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class GenshinImpactHandler implements GameHandler {
+public class ZenlessZoneZeroHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
 
-  public GenshinImpactHandler(
+  public ZenlessZoneZeroHandler(
       RetrievePostDetails retrievePostDetails, DatabaseHandler databaseHandler) {
     this.retrievePostDetails = retrievePostDetails;
     this.databaseHandler = databaseHandler;
   }
 
   private Update newsHandler() throws SQLException {
-    Update newsPost = retrievePostDetails.getGenshinImpactNews();
+    Update newsPost = retrievePostDetails.getZenlessZoneZeroNews();
 
-    return databaseHandler.getUpdate(newsPost, "Genshin Impact", 124);
+    return databaseHandler.getUpdate(newsPost, "Zenless Zone Zero", 125);
   }
 
   private Mono<Void> runNewsTask(GatewayDiscordClient gateway) {
     return Mono.fromRunnable(
         () -> {
-          GenshinImpactHandler genshinImpactHandler =
-              new GenshinImpactHandler(retrievePostDetails, databaseHandler);
+          ZenlessZoneZeroHandler zenlessZoneZeroHandler =
+              new ZenlessZoneZeroHandler(retrievePostDetails, databaseHandler);
 
           try {
-            Update newsPost = genshinImpactHandler.newsHandler();
+            Update newsPost = zenlessZoneZeroHandler.newsHandler();
 
             if (newsPost != null) {
               postUpdate(gateway, newsPost);
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch Genshin Impact update: %s\n",
+                "[%s] [ERROR] Failed to fetch Zenless Zone Zero update: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
   }
 
   private void postUpdate(GatewayDiscordClient gateway, Update post) {
-    var channelId = PropertiesLoader.loadProperties("GENSHIN_CHANNEL_ID");
+    var channelId = PropertiesLoader.loadProperties("ZZZ_CHANNEL_ID");
     String formattedDate = DateFormatter.getFormattedDate();
 
     gateway
@@ -67,24 +66,24 @@ public class GenshinImpactHandler implements GameHandler {
                       ? post.getImage()
                       : "";
 
-                String description =
-                        post.getDescription() != null
-                                && !Objects.equals(post.getDescription(), "No description available")
-                                ? post.getDescription()
-                                : "";
+              String description =
+                  post.getDescription() != null
+                          && !Objects.equals(post.getDescription(), "No description available")
+                      ? post.getDescription()
+                      : "";
 
               EmbedCreateSpec embed =
                   EmbedCreateSpec.builder()
                       .author(
-                          "Genshin Impact " + post.getCategory(),
-                          "https://genshin.hoyoverse.com/en/news",
+                          "Zenless Zone Zero " + post.getCategory(),
+                          "https://zenless.hoyoverse.com/en-us/news",
                           "")
                       .title(post.getTitle())
                       .url(post.getUrl())
                       .image(image)
                       .description(description)
                       .thumbnail(
-                          "https://raw.githubusercontent.com/SamC95/news-scraper/refs/heads/master/src/main/resources/thumbnails/genshin-impact-paimon.png")
+                          "https://raw.githubusercontent.com/SamC95/news-scraper/7fe4f112f6dda5238843ca46f1d30cf2c9624573/src/main/resources/thumbnails/zenless-zone-zero.png")
                       .footer("News provided by MochiBot • " + formattedDate, "")
                       .build();
               return channel.createMessage(embed);
@@ -92,8 +91,8 @@ public class GenshinImpactHandler implements GameHandler {
         .subscribe();
   }
 
-  @Override
-  public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runNewsTask(gateway);
-  }
+    @Override
+    public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
+        return runNewsTask(gateway);
+    }
 }
