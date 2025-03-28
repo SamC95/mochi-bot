@@ -3,6 +3,7 @@ package com.mochibot.utils.posts;
 import com.mochi.scraper.data.CivilizationVII;
 import com.mochi.scraper.data.FinalFantasyXI;
 import com.mochi.scraper.data.FinalFantasyXIV;
+import com.mochi.scraper.data.GenshinImpact;
 import com.mochi.scraper.data.HellLetLoose;
 import com.mochi.scraper.data.KillingFloor3;
 import com.mochi.scraper.data.MarvelRivals;
@@ -17,14 +18,19 @@ import com.mochi.scraper.data.WarThunder;
 import com.mochi.scraper.data.WorldOfWarcraft;
 import com.mochi.scraper.model.Update;
 import com.mochi.scraper.utils.JsoupConnector;
+import com.mochi.scraper.utils.PlaywrightConnector;
 import com.mochi.scraper.utils.SteamRSSParser;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class RetrievePostDetails {
   CivilizationVII civilizationVII = new CivilizationVII(new JsoupConnector());
   FinalFantasyXIV finalFantasyXIV = new FinalFantasyXIV(new JsoupConnector());
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
+  GenshinImpact genshinImpact = new GenshinImpact(new PlaywrightConnector());
   HellLetLoose hellLetLoose = new HellLetLoose(new JsoupConnector());
   KillingFloor3 killingFloor3 = new KillingFloor3(new JsoupConnector());
   MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
@@ -68,6 +74,32 @@ public class RetrievePostDetails {
     return finalFantasyXI.informationFeed;
   }
 
+  public Update getGenshinImpactNews() {
+    CompletableFuture<Void> future =
+        CompletableFuture.runAsync(
+            () -> {
+              try {
+                genshinImpact.getNewsFeed();
+              }
+              catch (IOException e) {
+                System.err.printf(
+                    "[%s] [ERROR] Failed to retrieve genshin impact post: %s\n",
+                    LocalTime.now(), e.getMessage());
+              }
+            });
+
+    try {
+      future.get();
+    }
+    catch (InterruptedException | ExecutionException e) {
+      System.err.printf(
+          "[%s] [ERROR] Failed to retrieve genshin impact post: %s\n",
+          LocalTime.now(), e.getMessage());
+    }
+
+    return genshinImpact.newsFeed;
+  }
+
   public Update getHellLetLooseNews() throws IOException {
     SteamRSSParser.getSteamRSSNewsFeed(
         "686810", hellLetLoose.newsFeed, hellLetLoose.jsoupConnector);
@@ -76,7 +108,8 @@ public class RetrievePostDetails {
   }
 
   public Update getKillingFloor3News() throws IOException {
-    SteamRSSParser.getSteamRSSNewsFeed("1430190", killingFloor3.newsFeed, killingFloor3.jsoupConnector);
+    SteamRSSParser.getSteamRSSNewsFeed(
+        "1430190", killingFloor3.newsFeed, killingFloor3.jsoupConnector);
 
     return killingFloor3.newsFeed;
   }
@@ -126,7 +159,7 @@ public class RetrievePostDetails {
 
   public Update getPathOfExile2News() throws IOException {
     SteamRSSParser.getSteamRSSNewsFeed(
-            "2694490", pathOfExile2.newsFeed, pathOfExile2.jsoupConnector);
+        "2694490", pathOfExile2.newsFeed, pathOfExile2.jsoupConnector);
 
     return pathOfExile2.newsFeed;
   }

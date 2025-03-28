@@ -54,7 +54,6 @@
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/api/grpc/gapic-google-cloud-storage-v2/2.38.0-alpha/gapic-google-cloud-storage-v2-2.38.0-alpha.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/log4j/log4j/1.2.17/log4j-1.2.17.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/discord4j/discord4j-core/3.2.6/discord4j-core-3.2.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$USER_HOME$/news-scraper/news-scraper/out/artifacts/news_scraper_jar/news-scraper.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/io/netty/netty-transport-native-unix-common/4.1.109.Final/netty-transport-native-unix-common-4.1.109.Final.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/21/javafx-graphics-21.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/google/guava/failureaccess/1.0.2/failureaccess-1.0.2.jar" path-in-jar="/" />

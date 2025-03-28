@@ -3,6 +3,7 @@ package com.mochibot.utils.posts;
 import com.mochibot.handlers.CivilizationVIIHandler;
 import com.mochibot.handlers.FFXIHandler;
 import com.mochibot.handlers.FFXIVHandler;
+import com.mochibot.handlers.GenshinImpactHandler;
 import com.mochibot.handlers.HellLetLooseHandler;
 import com.mochibot.handlers.KillingFloor3Handler;
 import com.mochibot.handlers.MHWildsHandler;
@@ -39,6 +40,9 @@ public class PostScheduler {
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new FFXIVHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
+          Map.entry(
+              new GenshinImpactHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new HellLetLooseHandler(retrievePostDetails, databaseHandler),
