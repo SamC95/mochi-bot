@@ -5,7 +5,7 @@ Final Fantasy XI                | 102 | 103 |
 Genshin Impact                  | 124 |
 Hell Let Loose                  | 104 |
 Killing Floor 3                 | 121 |
-Marvel Rivals                   | 115 | 116 | 117 |
+Marvel Rivals                   | 115 | 116 | 117 | 126 |
 Monster Hunter Wilds            | 105 |
 Old School RuneScape            | 112 |
 Overwatch 2                     | 106 | 123 |

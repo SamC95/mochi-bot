@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
 
-
 public class MarvelRivalsHandler implements GameHandler {
   private final RetrievePostDetails retrievePostDetails;
   private final DatabaseHandler databaseHandler;
@@ -44,6 +43,12 @@ public class MarvelRivalsHandler implements GameHandler {
     Update updatePost = retrievePostDetails.getMarvelRivalsUpdates();
 
     return databaseHandler.getUpdate(updatePost, "Marvel Rivals updates", 117);
+  }
+
+  private Update balanceHandler() throws SQLException, IOException {
+    Update balancePost = retrievePostDetails.getMarvelRivalsBalancePosts();
+
+    return databaseHandler.getUpdate(balancePost, "Marvel Rivals balance posts", 126);
   }
 
   private Mono<Void> runAnnouncementTask(GatewayDiscordClient gateway) {
@@ -103,6 +108,25 @@ public class MarvelRivalsHandler implements GameHandler {
         });
   }
 
+  private Mono<Void> runBalancePostTask(GatewayDiscordClient gateway) {
+    return Mono.fromRunnable(
+        () -> {
+          MarvelRivalsHandler marvelRivalsHandler =
+              new MarvelRivalsHandler(retrievePostDetails, databaseHandler);
+          try {
+            Update updatePost = marvelRivalsHandler.balanceHandler();
+            if (updatePost != null) {
+              postUpdate(
+                  gateway, updatePost, "https://www.marvelrivals.com/balancepost/", "Balance Post");
+            }
+          } catch (Exception e) {
+            System.err.printf(
+                "[%s] [ERROR] Failed to fetch marvel rivals balance post: %s\n",
+                LocalTime.now(), e.getMessage());
+          }
+        });
+  }
+
   private void postUpdate(
       GatewayDiscordClient gateway, Update post, String authorUrl, String category) {
     var channelId = PropertiesLoader.loadProperties("MARVEL_RIVALS_CHANNEL_ID");
@@ -136,6 +160,9 @@ public class MarvelRivalsHandler implements GameHandler {
 
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
-    return runAnnouncementTask(gateway).then(runDevDiaryTask(gateway).then(runUpdateTask(gateway)));
+    return runAnnouncementTask(gateway)
+        .then(
+            runDevDiaryTask(gateway)
+                .then(runUpdateTask(gateway).then(runBalancePostTask(gateway))));
   }
 }

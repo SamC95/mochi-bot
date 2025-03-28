@@ -134,6 +134,12 @@ public class RetrievePostDetails {
     return marvelRivals.updateFeed;
   }
 
+  public Update getMarvelRivalsBalancePosts() throws IOException {
+    marvelRivals.getFeed("https://www.marvelrivals.com/balancepost/", marvelRivals.balanceFeed);
+
+    return marvelRivals.balanceFeed;
+  }
+
   public Update getMonsterHunterWildsNews() throws IOException {
     SteamRSSParser.getSteamRSSNewsFeed(
         "2246340", monsterHunterWilds.newsFeed, monsterHunterWilds.jsoupConnector);
