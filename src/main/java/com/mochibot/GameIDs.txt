@@ -4,6 +4,7 @@ Final Fantasy XIV               | 100 | 101 |
 Final Fantasy XI                | 102 | 103 |
 Genshin Impact                  | 124 |
 Hell Let Loose                  | 104 |
+Honkai Star Rail                | 127 |
 Killing Floor 3                 | 121 |
 Marvel Rivals                   | 115 | 116 | 117 | 126 |
 Monster Hunter Wilds            | 105 |

@@ -5,6 +5,7 @@ import com.mochibot.handlers.FFXIHandler;
 import com.mochibot.handlers.FFXIVHandler;
 import com.mochibot.handlers.GenshinImpactHandler;
 import com.mochibot.handlers.HellLetLooseHandler;
+import com.mochibot.handlers.HonkaiStarRailHandler;
 import com.mochibot.handlers.KillingFloor3Handler;
 import com.mochibot.handlers.MHWildsHandler;
 import com.mochibot.handlers.MarvelRivalsHandler;
@@ -48,6 +49,9 @@ public class PostScheduler {
           Map.entry(
               new HellLetLooseHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
+          Map.entry(
+              new HonkaiStarRailHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new KillingFloor3Handler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),

@@ -5,6 +5,7 @@ import com.mochi.scraper.data.FinalFantasyXI;
 import com.mochi.scraper.data.FinalFantasyXIV;
 import com.mochi.scraper.data.GenshinImpact;
 import com.mochi.scraper.data.HellLetLoose;
+import com.mochi.scraper.data.HonkaiStarRail;
 import com.mochi.scraper.data.KillingFloor3;
 import com.mochi.scraper.data.MarvelRivals;
 import com.mochi.scraper.data.MonsterHunterWilds;
@@ -33,6 +34,7 @@ public class RetrievePostDetails {
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
   GenshinImpact genshinImpact = new GenshinImpact(new PlaywrightConnector());
   HellLetLoose hellLetLoose = new HellLetLoose(new JsoupConnector());
+  HonkaiStarRail honkaiStarRail = new HonkaiStarRail(new PlaywrightConnector());
   KillingFloor3 killingFloor3 = new KillingFloor3(new JsoupConnector());
   MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
   MonsterHunterWilds monsterHunterWilds = new MonsterHunterWilds(new JsoupConnector());
@@ -82,8 +84,7 @@ public class RetrievePostDetails {
             () -> {
               try {
                 genshinImpact.getNewsFeed();
-              }
-              catch (IOException e) {
+              } catch (IOException e) {
                 System.err.printf(
                     "[%s] [ERROR] Failed to retrieve genshin impact post: %s\n",
                     LocalTime.now(), e.getMessage());
@@ -92,8 +93,7 @@ public class RetrievePostDetails {
 
     try {
       future.get();
-    }
-    catch (InterruptedException | ExecutionException e) {
+    } catch (InterruptedException | ExecutionException e) {
       System.err.printf(
           "[%s] [ERROR] Failed to retrieve genshin impact post: %s\n",
           LocalTime.now(), e.getMessage());
@@ -107,6 +107,24 @@ public class RetrievePostDetails {
         "686810", hellLetLoose.newsFeed, hellLetLoose.jsoupConnector);
 
     return hellLetLoose.newsFeed;
+  }
+
+  public Update getHonkaiStarRailNews() {
+    CompletableFuture<Void> future =
+        CompletableFuture.runAsync(
+            () -> {
+              honkaiStarRail.getNewsFeed();
+            });
+
+    try {
+      future.get();
+    } catch (InterruptedException | ExecutionException e) {
+      System.err.printf(
+          "[%s] [ERROR] Failed to retrieve Honkai Star Rail post: %s\n",
+          LocalTime.now(), e.getMessage());
+    }
+
+    return honkaiStarRail.newsFeed;
   }
 
   public Update getKillingFloor3News() throws IOException {
@@ -229,25 +247,23 @@ public class RetrievePostDetails {
 
   public Update getZenlessZoneZeroNews() {
     CompletableFuture<Void> future =
-            CompletableFuture.runAsync(
-                    () -> {
-                      try {
-                        zenlessZoneZero.getNewsFeed();
-                      }
-                      catch (IOException e) {
-                        System.err.printf(
-                                "[%s] [ERROR] Failed to retrieve zenless zone zero post: %s\n",
-                                LocalTime.now(), e.getMessage());
-                      }
-                    });
+        CompletableFuture.runAsync(
+            () -> {
+              try {
+                zenlessZoneZero.getNewsFeed();
+              } catch (IOException e) {
+                System.err.printf(
+                    "[%s] [ERROR] Failed to retrieve zenless zone zero post: %s\n",
+                    LocalTime.now(), e.getMessage());
+              }
+            });
 
     try {
       future.get();
-    }
-    catch (InterruptedException | ExecutionException e) {
+    } catch (InterruptedException | ExecutionException e) {
       System.err.printf(
-              "[%s] [ERROR] Failed to retrieve zenless zone zero post: %s\n",
-              LocalTime.now(), e.getMessage());
+          "[%s] [ERROR] Failed to retrieve zenless zone zero post: %s\n",
+          LocalTime.now(), e.getMessage());
     }
 
     return zenlessZoneZero.newsFeed;

@@ -12,7 +12,6 @@ import discord4j.core.object.entity.channel.TextChannel;
 import discord4j.core.spec.EmbedCreateSpec;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.util.Objects;
