@@ -9,6 +9,7 @@ import com.mochibot.handlers.HonkaiStarRailHandler;
 import com.mochibot.handlers.KillingFloor3Handler;
 import com.mochibot.handlers.MHWildsHandler;
 import com.mochibot.handlers.MarvelRivalsHandler;
+import com.mochibot.handlers.NikkeHandler;
 import com.mochibot.handlers.OSRSHandler;
 import com.mochibot.handlers.OverwatchHandler;
 import com.mochibot.handlers.PathOfExile2Handler;
@@ -45,7 +46,7 @@ public class PostScheduler {
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new GenshinImpactHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new HellLetLooseHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
@@ -61,6 +62,9 @@ public class PostScheduler {
           Map.entry(
               new MHWildsHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
+          Map.entry(
+              new NikkeHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new OSRSHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
@@ -87,7 +91,7 @@ public class PostScheduler {
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new ZenlessZoneZeroHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)));
+              Map.of("initialDelay", 5L, "interval", 10L)));
 
   public void schedulePeriodicPosts(GatewayDiscordClient gateway) {
     handlerScheduleMap.forEach(

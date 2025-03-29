@@ -9,6 +9,7 @@ import com.mochi.scraper.data.HonkaiStarRail;
 import com.mochi.scraper.data.KillingFloor3;
 import com.mochi.scraper.data.MarvelRivals;
 import com.mochi.scraper.data.MonsterHunterWilds;
+import com.mochi.scraper.data.Nikke;
 import com.mochi.scraper.data.OldSchoolRuneScape;
 import com.mochi.scraper.data.Overwatch;
 import com.mochi.scraper.data.PathOfExile2;
@@ -38,6 +39,7 @@ public class RetrievePostDetails {
   KillingFloor3 killingFloor3 = new KillingFloor3(new JsoupConnector());
   MarvelRivals marvelRivals = new MarvelRivals(new JsoupConnector());
   MonsterHunterWilds monsterHunterWilds = new MonsterHunterWilds(new JsoupConnector());
+  Nikke nikke = new Nikke(new PlaywrightConnector());
   OldSchoolRuneScape oldSchoolRuneScape = new OldSchoolRuneScape(new JsoupConnector());
   Overwatch overwatch = new Overwatch(new JsoupConnector());
   PathOfExile2 pathOfExile2 = new PathOfExile2(new JsoupConnector());
@@ -163,6 +165,24 @@ public class RetrievePostDetails {
         "2246340", monsterHunterWilds.newsFeed, monsterHunterWilds.jsoupConnector);
 
     return monsterHunterWilds.newsFeed;
+  }
+
+  public Update getNikkeNews() {
+    CompletableFuture<Void> future =
+            CompletableFuture.runAsync(
+                    () -> {
+                      nikke.getNewsFeed();
+                    });
+
+    try {
+      future.get();
+    } catch (InterruptedException | ExecutionException e) {
+      System.err.printf(
+              "[%s] [ERROR] Failed to retrieve NIKKE post: %s\n",
+              LocalTime.now(), e.getMessage());
+    }
+
+    return nikke.newsFeed;
   }
 
   public Update getOldSchoolRuneScapeNews() throws IOException {
