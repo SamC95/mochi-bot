@@ -21,7 +21,7 @@ public class MochiBotApplication {
     Thread mochiThread = new Thread(mochi::start);
     mochiThread.start();
 
-    // Handles periodic deletion of old posts from the database (2 months old)
+    // Handles periodic deletion of old posts from the database (6 months old)
     scheduler.scheduleAtFixedRate(
         () -> {
           DatabaseBuilder dbBuilder = new DatabaseBuilder();
