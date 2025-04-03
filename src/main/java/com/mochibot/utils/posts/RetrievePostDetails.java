@@ -137,7 +137,7 @@ public class RetrievePostDetails {
   }
 
   public Update getMarvelRivalsAnnouncements() throws IOException {
-    marvelRivals.getFeed("https://www.marvelrivals.com/news/", marvelRivals.announcementFeed);
+    marvelRivals.getFeed("https://www.marvelrivals.com/announcements/", marvelRivals.announcementFeed);
 
     return marvelRivals.announcementFeed;
   }

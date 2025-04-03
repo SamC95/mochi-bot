@@ -60,7 +60,7 @@ public class MarvelRivalsHandler implements GameHandler {
             Update announcementPost = marvelRivalsHandler.announcementHandler();
             if (announcementPost != null) {
               postUpdate(
-                  gateway, announcementPost, "https://www.marvelrivals.com/news/", "Announcement");
+                  gateway, announcementPost, "https://www.marvelrivals.com/announcements/", "Announcement");
             }
           } catch (Exception e) {
             System.err.printf(
