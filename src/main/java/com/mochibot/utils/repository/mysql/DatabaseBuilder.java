@@ -29,7 +29,7 @@ public class DatabaseBuilder {
   }
 
   public void deleteOldPosts(Connection connection) {
-    String deleteQuery = "DELETE FROM posts WHERE post_date < DATE_SUB(CURDATE(), INTERVAL 2 MONTH)";
+    String deleteQuery = "DELETE FROM posts WHERE post_date < DATE_SUB(NOW(), INTERVAL 2 MONTH)";
 
     try (PreparedStatement statement = connection.prepareStatement(deleteQuery)) {
       int rowsAffected = statement.executeUpdate();
