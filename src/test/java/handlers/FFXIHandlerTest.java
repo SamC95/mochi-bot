@@ -29,7 +29,7 @@ public class FFXIHandlerTest {
   }
 
   @Test
-  public void testTopicsHandler() throws Exception {
+  public void topicsHandlerShouldReturnPostData() throws Exception {
     Update mockUpdate = new Update();
     mockUpdate.setTitle("Final Fantasy XI Topics Title");
     mockUpdate.setDescription("Final Fantasy XI Topics Description");
@@ -54,7 +54,7 @@ public class FFXIHandlerTest {
   }
 
   @Test
-  public void testInformationHandler() throws Exception {
+  public void informationHandlerShouldReturnPostData() throws Exception {
     Update mockUpdate = new Update();
     mockUpdate.setTitle("Final Fantasy XI Information Title");
     mockUpdate.setDescription("Final Fantasy XI Information Description");
