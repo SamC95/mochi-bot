@@ -30,7 +30,6 @@ public class OSRSHandler implements GameHandler {
   private Update newsHandler() throws SQLException, IOException {
     Update newsPost = retrievePostDetails.getOldSchoolRuneScapeNews();
 
-
     return databaseHandler.getUpdate(newsPost, "Old School RuneScape", 112);
   }
 
