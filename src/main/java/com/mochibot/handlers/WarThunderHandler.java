@@ -131,7 +131,7 @@ public class WarThunderHandler implements GameHandler {
             }
           } catch (Exception e) {
             System.err.printf(
-                "[%s] [ERROR] Failed to fetch War Thunder pinned changelog: %s\n",
+                "[%s] [ERROR] Failed to fetch War Thunder unpinned changelog: %s\n",
                 LocalTime.now(), e.getMessage());
           }
         });
