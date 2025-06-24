@@ -13,40 +13,44 @@ public class DatabaseHandler {
   public Update getUpdate(Update post, String gameTitle, int gameId) throws SQLException {
     if (post == null || post.getTitle() == null || post.getUrl() == null) {
       System.err.printf(
-              "[%s] [ERROR] Post data for %s is invalid or missing, skipping update.\n",
-              LocalTime.now(), gameTitle);
+          "[%s] [ERROR] Post data for %s is invalid or missing, skipping update.\n",
+          LocalTime.now(), gameTitle);
 
       return null;
     }
 
-    String query = "SELECT title, url FROM posts WHERE title = ? OR url = ?";
+    String query = "SELECT game_id, title, url FROM posts WHERE url = ?";
 
     try (PreparedStatement statement = connection.prepareStatement(query)) {
-      statement.setString(1, post.getTitle());
-      statement.setString(2, post.getUrl());
+      statement.setString(1, post.getUrl());
 
       ResultSet resultSet = statement.executeQuery();
 
       if (resultSet.next()) {
-        String currentTitle = resultSet.getString("title");
-        String currentUrl = resultSet.getString("url");
+        int existingGameId = resultSet.getInt("game_id");
 
-        boolean isSameTitle = Objects.equals(currentTitle, post.getTitle());
-        boolean isSameUrl = Objects.equals(currentUrl, post.getUrl());
-
-        if (isSameTitle || isSameUrl) {
-          System.out.printf("[%s] [INFO] No new post for %s\n", LocalTime.now(), gameTitle);
+        if (existingGameId != gameId) {
+          updateGameIdForPost(post.getUrl(), gameId, gameTitle);
         }
-      } else {
-        insertPost(post, gameId, gameTitle);
-        return post;
+
+        System.out.printf("[%s] [INFO] No new post for %s\n", LocalTime.now(), gameTitle);
+        return null;
+      }
+      else {
+        boolean postInserted = insertPost(post, gameId, gameTitle);
+
+        if (postInserted) return post;
+        else {
+          System.out.printf(
+              "[%s] [INFO] Insert skipped for %s (duplicate or error handled)\n",
+              LocalTime.now(), gameTitle);
+          return null;
+        }
       }
     }
-
-    return null;
   }
 
-  private void insertPost(Update post, int gameId, String gameTitle) {
+  private boolean insertPost(Update post, int gameId, String gameTitle) {
     String insertQuery =
         "INSERT INTO posts (game_id, game_name, author, title, description, image_url, url, post_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -66,9 +70,35 @@ public class DatabaseHandler {
       statement.executeUpdate();
 
       System.out.printf("[%s] [INFO] Inserted new post for %s\n", LocalTime.now(), gameTitle);
+      return true;
     } catch (SQLException e) {
       System.err.printf(
           "[%s] [ERROR] Failed to insert new post for %s: %s\n", LocalTime.now(), gameTitle, e);
+      return false;
+    }
+  }
+
+  private void updateGameIdForPost(String url, int gameId, String gameTitle) {
+    String updateQuery = "UPDATE posts SET game_id = ? WHERE url = ?";
+
+    try (PreparedStatement statement = connection.prepareStatement(updateQuery)) {
+      statement.setInt(1, gameId);
+      statement.setString(2, url);
+
+      int rowsUpdated = statement.executeUpdate();
+
+      if (rowsUpdated > 0) {
+        System.out.printf(
+            "[%s] [INFO] Updated game_id for existing post of [%s] to [%d]\n",
+            LocalTime.now(), gameTitle, gameId);
+      } else {
+        System.err.printf(
+            "[%s] [ERROR] Failed to update game_id for post of [%s]\n", LocalTime.now(), gameTitle);
+      }
+    } catch (SQLException e) {
+      System.err.printf(
+          "[%s] [ERROR] An unexpected SQL exception occurred whilst updating the game id for [%s]\n",
+          LocalTime.now(), gameTitle);
     }
   }
 }
