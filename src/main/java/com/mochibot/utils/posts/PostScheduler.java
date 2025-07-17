@@ -18,6 +18,7 @@ import com.mochibot.handlers.TheOldRepublicHandler;
 import com.mochibot.handlers.ValheimHandler;
 import com.mochibot.handlers.WarThunderHandler;
 import com.mochibot.handlers.WorldOfWarcraftHandler;
+import com.mochibot.handlers.WutheringWavesHandler;
 import com.mochibot.handlers.ZenlessZoneZeroHandler;
 import com.mochibot.utils.repository.mysql.DatabaseHandler;
 import discord4j.core.GatewayDiscordClient;
@@ -52,7 +53,7 @@ public class PostScheduler {
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new HonkaiStarRailHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 2L, "interval", 10L)),
           Map.entry(
               new KillingFloor3Handler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
@@ -64,7 +65,7 @@ public class PostScheduler {
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
               new NikkeHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 2L, "interval", 10L)),
           Map.entry(
               new OSRSHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
@@ -88,6 +89,9 @@ public class PostScheduler {
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new WorldOfWarcraftHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
+          Map.entry(
+              new WutheringWavesHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
               new ZenlessZoneZeroHandler(retrievePostDetails, databaseHandler),

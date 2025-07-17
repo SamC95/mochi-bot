@@ -18,4 +18,5 @@ The Old Republic                | 108 |
 Valheim                         | 118 |
 War Thunder                     | 109 | 114 | 119 | 120 |
 World of Warcraft               | 110 |
+Wuthering Waves                 | 129 |
 Zenless Zone Zero               | 125 |

@@ -18,6 +18,7 @@ import com.mochi.scraper.data.TheOldRepublic;
 import com.mochi.scraper.data.Valheim;
 import com.mochi.scraper.data.WarThunder;
 import com.mochi.scraper.data.WorldOfWarcraft;
+import com.mochi.scraper.data.WutheringWaves;
 import com.mochi.scraper.data.ZenlessZoneZero;
 import com.mochi.scraper.model.Update;
 import com.mochi.scraper.utils.JsoupConnector;
@@ -48,6 +49,7 @@ public class RetrievePostDetails {
   Valheim valheim = new Valheim(new JsoupConnector());
   WarThunder warThunder = new WarThunder(new JsoupConnector());
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
+  WutheringWaves wutheringWaves = new WutheringWaves(new PlaywrightConnector());
   ZenlessZoneZero zenlessZoneZero = new ZenlessZoneZero(new PlaywrightConnector());
 
   public Update getCivilizationVIINews() throws IOException {
@@ -137,7 +139,8 @@ public class RetrievePostDetails {
   }
 
   public Update getMarvelRivalsAnnouncements() throws IOException {
-    marvelRivals.getFeed("https://www.marvelrivals.com/announcements/", marvelRivals.announcementFeed);
+    marvelRivals.getFeed(
+        "https://www.marvelrivals.com/announcements/", marvelRivals.announcementFeed);
 
     return marvelRivals.announcementFeed;
   }
@@ -169,17 +172,16 @@ public class RetrievePostDetails {
 
   public Update getNikkeNews() {
     CompletableFuture<Void> future =
-            CompletableFuture.runAsync(
-                    () -> {
-                      nikke.getNewsFeed();
-                    });
+        CompletableFuture.runAsync(
+            () -> {
+              nikke.getNewsFeed();
+            });
 
     try {
       future.get();
     } catch (InterruptedException | ExecutionException e) {
       System.err.printf(
-              "[%s] [ERROR] Failed to retrieve NIKKE post: %s\n",
-              LocalTime.now(), e.getMessage());
+          "[%s] [ERROR] Failed to retrieve NIKKE post: %s\n", LocalTime.now(), e.getMessage());
     }
 
     return nikke.newsFeed;
@@ -263,6 +265,22 @@ public class RetrievePostDetails {
     worldOfWarcraft.getNewsFeed();
 
     return worldOfWarcraft.newsFeed;
+  }
+
+  public Update getWutheringWavesNews() {
+    CompletableFuture<Void> future =
+        CompletableFuture.runAsync(
+            () -> wutheringWaves.getNewsFeed());
+
+    try {
+      future.get();
+    } catch (InterruptedException | ExecutionException e) {
+      System.err.printf(
+          "[%s] [ERROR] Failed to retrieve wuthering waves post: %s\n",
+          LocalTime.now(), e.getMessage());
+    }
+
+    return wutheringWaves.newsFeed;
   }
 
   public Update getZenlessZoneZeroNews() {
