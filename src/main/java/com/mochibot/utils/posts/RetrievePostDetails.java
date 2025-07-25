@@ -1,5 +1,6 @@
 package com.mochibot.utils.posts;
 
+import com.mochi.scraper.data.Borderlands4;
 import com.mochi.scraper.data.CivilizationVII;
 import com.mochi.scraper.data.FinalFantasyXI;
 import com.mochi.scraper.data.FinalFantasyXIV;
@@ -31,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class RetrievePostDetails {
+  Borderlands4 borderlands4 = new Borderlands4(new JsoupConnector());
   CivilizationVII civilizationVII = new CivilizationVII(new JsoupConnector());
   FinalFantasyXIV finalFantasyXIV = new FinalFantasyXIV(new JsoupConnector());
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
@@ -51,6 +53,12 @@ public class RetrievePostDetails {
   WorldOfWarcraft worldOfWarcraft = new WorldOfWarcraft(new JsoupConnector());
   WutheringWaves wutheringWaves = new WutheringWaves(new PlaywrightConnector());
   ZenlessZoneZero zenlessZoneZero = new ZenlessZoneZero(new PlaywrightConnector());
+
+  public Update getBorderlands4News() throws IOException {
+    borderlands4.getNewsFeed();
+
+    return borderlands4.newsFeed;
+  }
 
   public Update getCivilizationVIINews() throws IOException {
     civilizationVII.getNewsFeed();

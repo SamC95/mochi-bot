@@ -1,5 +1,6 @@
 ### Games by Database IDs ###
 
+Borderlands 4                   | 130 |
 Final Fantasy XIV               | 100 | 101 |
 Final Fantasy XI                | 102 | 103 |
 Genshin Impact                  | 124 |
