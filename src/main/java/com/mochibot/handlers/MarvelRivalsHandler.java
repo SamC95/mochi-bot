@@ -161,8 +161,8 @@ public class MarvelRivalsHandler implements GameHandler {
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
     return runAnnouncementTask(gateway)
-        .then(
-            runDevDiaryTask(gateway)
-                .then(runUpdateTask(gateway).then(runBalancePostTask(gateway))));
+        .then(runDevDiaryTask(gateway)
+                .then(runUpdateTask(gateway)
+                        .then(runBalancePostTask(gateway))));
   }
 }

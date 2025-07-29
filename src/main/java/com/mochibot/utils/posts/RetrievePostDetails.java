@@ -14,6 +14,7 @@ import com.mochi.scraper.data.Nikke;
 import com.mochi.scraper.data.OldSchoolRuneScape;
 import com.mochi.scraper.data.Overwatch;
 import com.mochi.scraper.data.PathOfExile2;
+import com.mochi.scraper.data.RunescapeDragonwilds;
 import com.mochi.scraper.data.SatisfactoryGame;
 import com.mochi.scraper.data.TheOldRepublic;
 import com.mochi.scraper.data.Valheim;
@@ -34,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 public class RetrievePostDetails {
   Borderlands4 borderlands4 = new Borderlands4(new JsoupConnector());
   CivilizationVII civilizationVII = new CivilizationVII(new JsoupConnector());
+  RunescapeDragonwilds runescapeDragonwilds = new RunescapeDragonwilds(new JsoupConnector());
   FinalFantasyXIV finalFantasyXIV = new FinalFantasyXIV(new JsoupConnector());
   FinalFantasyXI finalFantasyXI = new FinalFantasyXI(new JsoupConnector());
   GenshinImpact genshinImpact = new GenshinImpact(new PlaywrightConnector());
@@ -64,6 +66,12 @@ public class RetrievePostDetails {
     civilizationVII.getNewsFeed();
 
     return civilizationVII.newsFeed;
+  }
+
+  public Update getDragonwildsNews() throws IOException {
+    runescapeDragonwilds.getNewsFeed();
+
+    return runescapeDragonwilds.newsFeed;
   }
 
   public Update getFinalFantasyXIVNews() throws IOException {

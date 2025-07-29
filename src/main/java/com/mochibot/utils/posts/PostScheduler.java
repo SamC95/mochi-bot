@@ -2,6 +2,7 @@ package com.mochibot.utils.posts;
 
 import com.mochibot.handlers.Borderlands4Handler;
 import com.mochibot.handlers.CivilizationVIIHandler;
+import com.mochibot.handlers.DragonwildsHandler;
 import com.mochibot.handlers.FFXIHandler;
 import com.mochibot.handlers.FFXIVHandler;
 import com.mochibot.handlers.GenshinImpactHandler;
@@ -44,6 +45,9 @@ public class PostScheduler {
               new CivilizationVIIHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),
           Map.entry(
+              new DragonwildsHandler(retrievePostDetails, databaseHandler),
+              Map.of("initialDelay", 0L, "interval", 10L)),
+          Map.entry(
               new FFXIHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 0L, "interval", 10L)),
           Map.entry(
@@ -60,10 +64,10 @@ public class PostScheduler {
               Map.of("initialDelay", 2L, "interval", 10L)),
           Map.entry(
               new KillingFloor3Handler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 3L, "interval", 10L)),
           Map.entry(
               new MarvelRivalsHandler(retrievePostDetails, databaseHandler),
-              Map.of("initialDelay", 0L, "interval", 10L)),
+              Map.of("initialDelay", 3L, "interval", 10L)),
           Map.entry(
               new MHWildsHandler(retrievePostDetails, databaseHandler),
               Map.of("initialDelay", 5L, "interval", 10L)),

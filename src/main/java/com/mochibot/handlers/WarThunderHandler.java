@@ -171,8 +171,8 @@ public class WarThunderHandler implements GameHandler {
   @Override
   public Mono<Void> handleScheduledPost(GatewayDiscordClient gateway) {
     return runUnpinnedNewsTask(gateway)
-        .then(
-            runPinnedNewsTask(gateway)
-                .then(runPinnedChangelogTask(gateway).then(runUnpinnedChangelogTask(gateway))));
+        .then(runPinnedNewsTask(gateway)
+                .then(runPinnedChangelogTask(gateway)
+                        .then(runUnpinnedChangelogTask(gateway))));
   }
 }
